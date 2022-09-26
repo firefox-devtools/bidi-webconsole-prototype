@@ -1,0 +1,15 @@
+:root {
+  --highlight: purple;
+}
+
+h3 {
+  background: var(--highlight);
+  margin: 0;
+  padding: 20px;
+  color: white;
+  font-size: 30px;
+}
+
+.wrapper {
+  padding: 0 20px 20px;
+}

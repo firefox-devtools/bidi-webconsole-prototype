@@ -1,0 +1,8 @@
+.flexible-output-input {
+  display: flex;
+  flex-direction: column;
+  grid-area: output-input;
+  /* Don't take more height than the grid allows to */
+  max-height: 100%;
+  overflow: hidden;
+}

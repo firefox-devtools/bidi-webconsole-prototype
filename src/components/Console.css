@@ -5,4 +5,7 @@
   /* Don't take more height than the grid allows to */
   max-height: 100%;
   overflow: hidden;
+  background: var(--theme-body-background);
+  color: var(--theme-body-color);
+  margin-top: 10px;
 }

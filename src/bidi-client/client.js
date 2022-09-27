@@ -43,7 +43,6 @@ class Client extends EventEmitter {
 
   #forwardWebsocketEvent = (eventName, data) => {
     this.emit(`websocket-${eventName}`, data);
-    console.log("websocketClient", eventName, { data });
   };
 }
 

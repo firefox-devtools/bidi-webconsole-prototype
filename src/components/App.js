@@ -2,8 +2,46 @@ import React from "react";
 import Client from "../bidi-client/client.js";
 import ConnectionContainer from "./ConnectionContainer";
 import Console from "./Console";
+import { formatConsoleOutput } from "../format-utils/index.js";
 
 import "./App.css";
+
+const MESSAGE_TYPE = {
+  LOG: "log",
+  DIR: "dir",
+  TABLE: "table",
+  TRACE: "trace",
+  CLEAR: "clear",
+  START_GROUP: "startGroup",
+  START_GROUP_COLLAPSED: "startGroupCollapsed",
+  END_GROUP: "endGroup",
+  CONTENT_BLOCKING_GROUP: "contentBlockingWarningGroup",
+  STORAGE_ISOLATION_GROUP: "storageIsolationWarningGroup",
+  TRACKING_PROTECTION_GROUP: "trackingProtectionWarningGroup",
+  COOKIE_SAMESITE_GROUP: "cookieSameSiteGroup",
+  CORS_GROUP: "CORSWarningGroup",
+  CSP_GROUP: "CSPWarningGroup",
+  ASSERT: "assert",
+  DEBUG: "debug",
+  PROFILE: "profile",
+  PROFILE_END: "profileEnd",
+  // Undocumented in Chrome RDP, but is used for evaluation results.
+  RESULT: "result",
+  // Undocumented in Chrome RDP, but is used for input.
+  COMMAND: "command",
+  // Undocumented in Chrome RDP, but is used for messages that should not
+  // output anything (e.g. `console.time()` calls).
+  NULL_MESSAGE: "nullMessage",
+  NAVIGATION_MARKER: "navigationMarker",
+  SIMPLE_TABLE: "simpleTable",
+};
+const MESSAGE_LEVEL = {
+  LOG: "log",
+  ERROR: "error",
+  WARN: "warn",
+  DEBUG: "debug",
+  INFO: "info",
+};
 
 class App extends React.Component {
   #client;
@@ -74,7 +112,9 @@ class App extends React.Component {
           ...this.state.consoleOutput,
           {
             id: data.params.timestamp,
-            message: data.params.args[0].value,
+            message: data.params.text,
+            type: data.params.type,
+            level: data.params.level,
           },
         ],
       });
@@ -134,6 +174,16 @@ class App extends React.Component {
 
   onConsoleSubmit = async (event) => {
     event.preventDefault();
+    this.setState({
+      consoleOutput: [
+        ...this.state.consoleOutput,
+        {
+          id: this.state.consoleInput,
+          message: this.state.consoleInput,
+          type: MESSAGE_TYPE.COMMAND,
+        },
+      ],
+    });
     const responce = await this.#client.sendCommand("script.evaluate", {
       expression: this.state.consoleInput,
       awaitPromise: false,
@@ -148,8 +198,12 @@ class App extends React.Component {
         {
           id: responce.id,
           message: responce.result.result
-            ? responce.result.result.value
+            ? formatConsoleOutput(responce.result.result)
             : responce.result.exceptionDetails.text,
+          type: MESSAGE_TYPE.RESULT,
+          level: responce.result.result
+            ? MESSAGE_LEVEL.LOG
+            : MESSAGE_LEVEL.ERROR,
         },
       ],
     });

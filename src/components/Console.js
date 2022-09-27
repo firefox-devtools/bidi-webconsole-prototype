@@ -1,4 +1,6 @@
 import ConsoleInput from "./ConsoleInput";
+import ConsoleOutput from "./ConsoleOutput";
+import "./Console.css";
 
 const Console = ({
   consoleOutput,
@@ -13,11 +15,7 @@ const Console = ({
 
   return (
     <div className="flexible-output-input">
-      <ul id="console-output">
-        {consoleOutput.map((data) => (
-          <li key={data.id}>{data.message}</li>
-        ))}
-      </ul>
+      <ConsoleOutput messages={consoleOutput} />
       <ConsoleInput
         onChange={onChange}
         onSubmit={onSubmit}

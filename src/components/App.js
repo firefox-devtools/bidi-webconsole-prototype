@@ -7,6 +7,7 @@ import "./App.css";
 
 class App extends React.Component {
   #client;
+  #isReconnecting;
   #topBrowsingContextId;
 
   constructor(props) {
@@ -17,17 +18,42 @@ class App extends React.Component {
       consoleOutput: [],
       isClientReady: false,
       isConnectButtonDisabled: false,
+      isConnectingToExistingSession: false,
       host: "localhost:9222",
     };
 
     this.#client = new Client();
-  }
-
-  connectClient = () => {
     this.#client.on("websocket-close", this.#onWebsocketClose);
     this.#client.on("websocket-open", this.#onWebsocketOpen);
     this.#client.on("websocket-message", this.#onWebsocketMessage);
 
+    this.#isReconnecting = false;
+  }
+
+  componentDidMount() {
+    const sessionId = localStorage.getItem("sessionId");
+    if (sessionId) {
+      // XXX: ReactStrictMode mounts the components twice. Since this component
+      // owns the client, it makes sense to let it drive the reconnection.
+      // This dirty workaround avoids attempting two connections at once.
+      if (this.#isReconnecting) {
+        return false;
+      }
+      this.#isReconnecting = true;
+
+      console.log("Attempt to reconnect to session id:", sessionId);
+      this.setState({
+        isConnectingToExistingSession: true,
+      });
+      this.#client.connect(this.state.host, sessionId);
+    }
+  }
+
+  connectClient = () => {
+    console.log("Attempt to create a connection to a new session");
+    this.setState({
+      isConnectingToExistingSession: false,
+    });
     this.#client.connect(this.state.host);
   };
 
@@ -60,8 +86,38 @@ class App extends React.Component {
       isConnectButtonDisabled: true,
     });
 
-    await this.#client.sendCommand("session.new", {});
+    const sessionStatusResponse = await this.#client.sendCommand(
+      "session.status",
+      {}
+    );
 
+    // If we connected to an existing session, status `ready` will be false.
+    // Only attempt to create a new session if `ready` is true.
+    const canCreateNewSession = sessionStatusResponse.result.ready;
+    const { isConnectingToExistingSession } = this.state;
+    if (!canCreateNewSession && !isConnectingToExistingSession) {
+      console.log(
+        "Unable to establish a new connection or to reuse an existing one," +
+          " please restart the target Firefox and reconnect"
+      );
+      return;
+    }
+
+    if (canCreateNewSession) {
+      console.log("Creating a new session");
+      const sessionNewResponse = await this.#client.sendCommand(
+        "session.new",
+        {}
+      );
+
+      // Store the session id
+      const sessionId = sessionNewResponse.result.sessionId;
+      localStorage.setItem("sessionId", sessionId);
+    }
+
+    // XXX: For existing sessions, we already subscribed to this in theory.
+    // We could skip it, but we have no way to check if we are already
+    // subscribed. We could also unsubscribe/subscribe.
     this.#client.sendCommand("session.subscribe", {
       events: ["log.entryAdded"],
     });

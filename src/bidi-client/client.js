@@ -8,21 +8,16 @@ class Client extends EventEmitter {
   constructor() {
     super();
     this.#reqId = 1;
-    this.#websocketClient = new WebSocketClient(this);
+
+    this.#websocketClient = new WebSocketClient();
+    this.#websocketClient.on("close", this.#forwardWebsocketEvent);
+    this.#websocketClient.on("open", this.#forwardWebsocketEvent);
+    this.#websocketClient.on("message", this.#forwardWebsocketEvent);
   }
 
-  connect(host) {
-    this.#websocketClient.open(`ws://${host}/session`);
-    this.#websocketClient.on("close", (_, data) =>
-      this.emit("websocket-close", data)
-    );
-    this.#websocketClient.on("open", (_, data) =>
-      this.emit("websocket-open", data)
-    );
-    this.#websocketClient.on("message", (_, data) => {
-      this.emit("websocket-message", data);
-      console.log("websocketClient", { data });
-    });
+  connect(host, sessionId = null) {
+    const url = `ws://${host}/session${sessionId ? "/" + sessionId : ""}`;
+    this.#websocketClient.open(url);
   }
 
   async sendCommand(method, params) {
@@ -45,6 +40,11 @@ class Client extends EventEmitter {
     this.#websocketClient.sendMessage(msg);
     return id;
   }
+
+  #forwardWebsocketEvent = (eventName, data) => {
+    this.emit(`websocket-${eventName}`, data);
+    console.log("websocketClient", eventName, { data });
+  };
 }
 
 export default Client;

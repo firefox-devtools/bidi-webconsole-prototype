@@ -172,20 +172,20 @@ class App extends React.Component {
     });
   };
 
-  onConsoleSubmit = async (event) => {
-    event.preventDefault();
+  onConsoleSubmit = async (value) => {
     this.setState({
       consoleOutput: [
         ...this.state.consoleOutput,
         {
-          id: this.state.consoleInput,
-          message: this.state.consoleInput,
+          id: Date.now(),
+          message: value,
           type: MESSAGE_TYPE.COMMAND,
         },
       ],
     });
+
     const responce = await this.#client.sendCommand("script.evaluate", {
-      expression: this.state.consoleInput,
+      expression: value,
       awaitPromise: false,
       target: {
         context: this.#topBrowsingContextId,

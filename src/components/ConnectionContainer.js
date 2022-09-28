@@ -2,10 +2,15 @@ import "./ConnectionContainer.css";
 
 const ConnectionContainer = ({
   host,
+  isClientReady,
   isConnectButtonDisabled,
   onClick,
   onInputChange,
 }) => {
+  if (isClientReady) {
+    return null;
+  }
+
   return (
     <div id="connection-container">
       <h4>Connect to Firefox</h4>

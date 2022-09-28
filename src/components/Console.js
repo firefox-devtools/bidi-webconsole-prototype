@@ -14,13 +14,15 @@ const Console = ({
   }
 
   return (
-    <div className="flexible-output-input">
-      <ConsoleOutput messages={consoleOutput} />
-      <ConsoleInput
-        onChange={onChange}
-        onSubmit={onSubmit}
-        value={consoleValue}
-      />
+    <div className="webconsole-app">
+      <div className="flexible-output-input">
+        <ConsoleOutput messages={consoleOutput} />
+        <ConsoleInput
+          onChange={onChange}
+          onSubmit={onSubmit}
+          value={consoleValue}
+        />
+      </div>
     </div>
   );
 };

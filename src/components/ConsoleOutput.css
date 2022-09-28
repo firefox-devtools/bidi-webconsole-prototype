@@ -1,2 +1,15 @@
-.message {
+.devtools-monospace {
+  font-family: var(--monospace-font-family);
+  font-size: var(--theme-code-font-size);
+}
+
+.webconsole-output {
+  direction: ltr;
+  overflow-y: scroll;
+  overflow-x: auto;
+  overflow-anchor: none;
+  user-select: text;
+  position: relative;
+  flex-shrink: 100000;
+  overflow-x: hidden;
 }

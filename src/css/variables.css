@@ -9,6 +9,17 @@
  */
 
 :root {
+  /* Global styles */
+  --base-font-style: message-box;
+  --base-font-size: var(--body-10-font-size);
+  --base-font-weight: var(--body-10-font-weight);
+  --base-line-height: 1.8;
+  --icon-label-font-size: var(--body-10-font-size);
+  --message-font-size: var(--body-10-font-size);
+  --button-font-size: var(--base-font-size);
+  --micro-font-size: 11px;
+  --monospace-font-family: monospace;
+
   --theme-focus-border-color-textbox: #0675d3;
   --theme-textbox-box-shadow: rgba(97, 181, 255, 0.75);
 

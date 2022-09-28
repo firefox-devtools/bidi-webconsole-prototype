@@ -1,3 +1,8 @@
+#connection-container {
+  margin-bottom: 5px;
+  padding: 0 20px;
+}
+
 #connect {
   width: 100px;
   text-align: center;

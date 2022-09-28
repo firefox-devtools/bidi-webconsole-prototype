@@ -7,7 +7,7 @@
   padding-top: var(--jsterm-padding-top);
   padding-bottom: var(--jsterm-padding-bottom);
   border-top-color: var(--theme-splitter-color);
-  border-top-width: var(--jsterm-border-width);
+  border-top-width: 1px;
   border-top-style: solid;
   overflow-y: auto;
   overflow-x: hidden;
@@ -22,6 +22,7 @@
   background-size: 12px 12px;
   padding-inline: 24px;
   background-position: 8px;
+  min-height: 24px;
 }
 
 .jsterm-input-container:focus-within {

@@ -7,5 +7,12 @@
   overflow: hidden;
   background: var(--theme-body-background);
   color: var(--theme-body-color);
-  margin-top: 10px;
+}
+
+.webconsole-app {
+  height: calc(100vh - 208px);
+  border-color: var(--theme-splitter-color);
+  border-width: 1px;
+  border-top-style: solid;
+  margin-top: 20px;
 }

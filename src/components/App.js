@@ -113,8 +113,11 @@ class App extends React.Component {
           {
             id: data.params.timestamp,
             message: data.params.text,
-            type: data.params.type,
+            source:
+              data.params.type === "console" ? "console-api" : data.params.type,
+            type: data.params.method,
             level: data.params.level,
+            method: data.params.method,
           },
         ],
       });
@@ -179,7 +182,9 @@ class App extends React.Component {
         {
           id: Date.now(),
           message: value,
+          source: "javascript",
           type: MESSAGE_TYPE.COMMAND,
+          level: MESSAGE_LEVEL.LOG,
         },
       ],
     });
@@ -200,6 +205,10 @@ class App extends React.Component {
           message: responce.result.result
             ? formatConsoleOutput(responce.result.result)
             : responce.result.exceptionDetails.text,
+          source: "javascript",
+          dataType: responce.result.result
+            ? responce.result.result.type
+            : "string",
           type: MESSAGE_TYPE.RESULT,
           level: responce.result.result
             ? MESSAGE_LEVEL.LOG

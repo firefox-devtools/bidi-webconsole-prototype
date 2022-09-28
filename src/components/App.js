@@ -107,9 +107,9 @@ class App extends React.Component {
     // Track only log.entryAdded event
     if (data.method === "log.entryAdded") {
       // Extend to support not only log messages
-      this.setState({
+      this.setState((state) => ({
         consoleOutput: [
-          ...this.state.consoleOutput,
+          ...state.consoleOutput,
           {
             id: data.params.timestamp,
             message: data.params.text,
@@ -120,7 +120,7 @@ class App extends React.Component {
             method: data.params.method,
           },
         ],
-      });
+      }));
     }
   };
 
@@ -176,9 +176,9 @@ class App extends React.Component {
   };
 
   onConsoleSubmit = async (value) => {
-    this.setState({
+    this.setState((state) => ({
       consoleOutput: [
-        ...this.state.consoleOutput,
+        ...state.consoleOutput,
         {
           id: Date.now(),
           message: value,
@@ -187,7 +187,7 @@ class App extends React.Component {
           level: MESSAGE_LEVEL.LOG,
         },
       ],
-    });
+    }));
 
     const responce = await this.#client.sendCommand("script.evaluate", {
       expression: value,
@@ -197,9 +197,9 @@ class App extends React.Component {
       },
     });
 
-    this.setState({
+    this.setState((state) => ({
       consoleOutput: [
-        ...this.state.consoleOutput,
+        ...state.consoleOutput,
         {
           id: responce.id,
           message: responce.result.result
@@ -215,7 +215,7 @@ class App extends React.Component {
             : MESSAGE_LEVEL.ERROR,
         },
       ],
-    });
+    }));
   };
 
   onInputChange = (event) => {

@@ -175,6 +175,12 @@ class App extends React.Component {
     });
   };
 
+  #onClearButtonClick = async () => {
+    this.setState(() => ({
+      consoleOutput: [],
+    }));
+  };
+
   onConsoleSubmit = async (value) => {
     this.setState((state) => ({
       consoleOutput: [
@@ -231,24 +237,32 @@ class App extends React.Component {
       host,
     } = this.state;
     return (
-      <div>
-        <h3>BiDi WebConsole Prototype</h3>
-        <div className="wrapper">
-          <ConnectionContainer
-            isConnectButtonDisabled={isConnectButtonDisabled}
-            host={host}
-            onClick={this.connectClient}
-            onInputChange={this.onInputChange}
-          />
-          <Console
-            consoleOutput={consoleOutput}
-            consoleInput={consoleInput}
-            isClientReady={isClientReady}
-            onSubmit={this.onConsoleSubmit}
-            onChange={this.onInputChange}
-          />
-        </div>
-      </div>
+      <>
+        <header>
+          <h3>BiDi WebConsole Prototype</h3>
+          {isClientReady ? (
+            <button
+              className="btn-clear"
+              onClick={this.#onClearButtonClick}
+              title="Clear the output"
+            ></button>
+          ) : null}
+        </header>
+        <ConnectionContainer
+          isClientReady={isClientReady}
+          isConnectButtonDisabled={isConnectButtonDisabled}
+          host={host}
+          onClick={this.connectClient}
+          onInputChange={this.onInputChange}
+        />
+        <Console
+          consoleOutput={consoleOutput}
+          consoleInput={consoleInput}
+          isClientReady={isClientReady}
+          onSubmit={this.onConsoleSubmit}
+          onChange={this.onInputChange}
+        />
+      </>
     );
   }
 }

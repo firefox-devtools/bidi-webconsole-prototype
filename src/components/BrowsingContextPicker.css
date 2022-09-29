@@ -1,0 +1,58 @@
+.BrowsingContextPicker {
+  position: absolute;
+  background-color: white;
+  right: 5px;
+  color: black;
+  width: 243px;
+  top: 55px;
+  z-index: 3;
+  border-radius: 2px;
+  border-color: var(--theme-splitter-color);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.BrowsingContextPicker ul {
+  padding: 0;
+  margin: 0;
+}
+
+.BrowsingContextPicker ul li {
+  list-style: none;
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+.BrowsingContextPicker ul li button:hover {
+  color: var(--blue-60);
+}
+
+.BrowsingContextEl_selected {
+  background-image: url("../assets/check.svg");
+  background-repeat: no-repeat;
+  background-position: 3px 5px;
+}
+
+.BrowsingContextEl_top {
+  border-top-color: var(--theme-splitter-color);
+  border-top-width: 1px;
+  border-top-style: solid;
+  padding-right: 5px;
+}
+
+.BrowsingContextEl_top:first-child {
+  border-top: none;
+}
+
+.BrowsingContext {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding: 4px 0px;
+}

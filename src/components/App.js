@@ -3,6 +3,7 @@ import Client from "../bidi-client/client.js";
 import ConnectionContainer from "./ConnectionContainer";
 import Console from "./Console";
 import { formatConsoleOutput } from "../format-utils/index.js";
+import BrowsingContextPicker from "./BrowsingContextPicker.js";
 
 import "./App.css";
 
@@ -46,18 +47,21 @@ const MESSAGE_LEVEL = {
 class App extends React.Component {
   #client;
   #isReconnecting;
-  #topBrowsingContextId;
 
   constructor(props) {
     super(props);
 
     this.state = {
+      browsingContexts: [],
       consoleInput: "",
       consoleOutput: [],
+      isBrowsingContextVisible: false,
       isClientReady: false,
       isConnectButtonDisabled: false,
       isConnectingToExistingSession: false,
       host: "localhost:9222",
+      selectedBrowsingContextId: null,
+      selectedBrowsingContextUrl: null,
     };
 
     this.#client = new Client();
@@ -102,25 +106,48 @@ class App extends React.Component {
     });
   };
 
-  #onWebsocketMessage = (_, data) => {
+  #onWebsocketMessage = async (_, data) => {
     console.log({ data });
-    // Track only log.entryAdded event
-    if (data.method === "log.entryAdded") {
-      // Extend to support not only log messages
-      this.setState((state) => ({
-        consoleOutput: [
-          ...state.consoleOutput,
-          {
-            id: data.params.timestamp,
-            message: data.params.text,
-            source:
-              data.params.type === "console" ? "console-api" : data.params.type,
-            type: data.params.method,
-            level: data.params.level,
-            method: data.params.method,
-          },
-        ],
-      }));
+    // eslint-disable-next-line default-case
+    switch (data.method) {
+      case "log.entryAdded": {
+        const context = this.#findBrowsingContextById(
+          this.state.browsingContexts,
+          data.params.source.context
+        );
+        this.setState((state) => ({
+          consoleOutput: [
+            ...state.consoleOutput,
+            {
+              contextId: data.params.source.context,
+              contextUrl: context?.url ?? "",
+              id: data.params.timestamp,
+              message: data.params.text,
+              source:
+                data.params.type === "console"
+                  ? "console-api"
+                  : data.params.type,
+              type: data.params.method,
+              level: data.params.level,
+              method: data.params.method,
+            },
+          ],
+        }));
+        break;
+      }
+      case "browsingContext.contextCreated":
+      case "browsingContext.load": {
+        const contextList = await this.#requestBrowsingContexts();
+        const selectedContext = this.#findBrowsingContextById(
+          contextList,
+          this.state.selectedBrowsingContextId
+        );
+        this.setState({
+          browsingContexts: contextList,
+          selectedBrowsingContextUrl: selectedContext.url,
+        });
+        break;
+      }
     }
   };
 
@@ -162,23 +189,69 @@ class App extends React.Component {
     // We could skip it, but we have no way to check if we are already
     // subscribed. We could also unsubscribe/subscribe.
     this.#client.sendCommand("session.subscribe", {
-      events: ["log.entryAdded"],
+      events: [
+        "browsingContext.contextCreated",
+        "browsingContext.load",
+        "log.entryAdded",
+      ],
     });
 
-    const responce = await this.#client.sendCommand(
-      "browsingContext.getTree",
-      {}
-    );
-    this.#topBrowsingContextId = responce.result.contexts[0].context;
+    const contextList = await this.#requestBrowsingContexts();
+    const topContext = contextList[0];
     this.setState({
+      browsingContexts: contextList,
+      selectedBrowsingContextId: topContext.context,
+      selectedBrowsingContextUrl: topContext.url,
       isClientReady: true,
     });
   };
 
-  #onClearButtonClick = async () => {
+  #onClearButtonClick = () => {
     this.setState(() => ({
       consoleOutput: [],
     }));
+  };
+
+  #requestBrowsingContexts = async () => {
+    const responce = await this.#client.sendCommand(
+      "browsingContext.getTree",
+      {}
+    );
+    return responce.result.contexts;
+  };
+
+  #findBrowsingContextById(contexts, id) {
+    for (let context of contexts) {
+      if (context.context === id) return context;
+
+      if (context.children) {
+        let desiredContext = this.#findBrowsingContextById(
+          context.children,
+          id
+        );
+        if (desiredContext) return desiredContext;
+      }
+    }
+    return false;
+  }
+
+  closeBrowsingContextPicker = () => {
+    this.setState({
+      isBrowsingContextVisible: false,
+    });
+  };
+
+  toggleBrowsingContextPicker = async () => {
+    this.setState({
+      isBrowsingContextVisible: !this.state.isBrowsingContextVisible,
+    });
+  };
+
+  setSelectedBrowsingContext = (browsingContextId, browsingContextUrl) => {
+    this.setState({
+      selectedBrowsingContextId: browsingContextId,
+      selectedBrowsingContextUrl: browsingContextUrl,
+    });
   };
 
   onConsoleSubmit = async (value) => {
@@ -186,6 +259,8 @@ class App extends React.Component {
       consoleOutput: [
         ...state.consoleOutput,
         {
+          contextId: this.state.selectedBrowsingContextId,
+          contextUrl: this.state.selectedBrowsingContextUrl,
           id: Date.now(),
           message: value,
           source: "javascript",
@@ -199,7 +274,7 @@ class App extends React.Component {
       expression: value,
       awaitPromise: false,
       target: {
-        context: this.#topBrowsingContextId,
+        context: this.state.selectedBrowsingContextId,
       },
     });
 
@@ -207,6 +282,8 @@ class App extends React.Component {
       consoleOutput: [
         ...state.consoleOutput,
         {
+          contextId: this.state.selectedBrowsingContextId,
+          contextUrl: this.state.selectedBrowsingContextUrl,
           id: responce.id,
           message: responce.result.result
             ? formatConsoleOutput(responce.result.result)
@@ -230,22 +307,44 @@ class App extends React.Component {
 
   render() {
     const {
+      browsingContexts,
       consoleInput,
       consoleOutput,
+      isBrowsingContextVisible,
       isClientReady,
       isConnectButtonDisabled,
       host,
+      selectedBrowsingContextId,
+      selectedBrowsingContextUrl,
     } = this.state;
+
     return (
       <>
         <header>
           <h3>BiDi WebConsole Prototype</h3>
           {isClientReady ? (
-            <button
-              className="btn-clear"
-              onClick={this.#onClearButtonClick}
-              title="Clear the output"
-            ></button>
+            <>
+              <button
+                className="webconsole-evaluation-selector-button devtools-button devtools-dropdown-button"
+                onClick={this.toggleBrowsingContextPicker}
+                title="Select a browsing context"
+              >
+                {selectedBrowsingContextUrl}
+              </button>
+              <BrowsingContextPicker
+                close={this.closeBrowsingContextPicker}
+                contexts={browsingContexts}
+                length={browsingContexts.length}
+                selectedId={selectedBrowsingContextId}
+                setSelectedContext={this.setSelectedBrowsingContext}
+                isVisible={isBrowsingContextVisible}
+              />
+              <button
+                className="btn-clear"
+                onClick={this.#onClearButtonClick}
+                title="Clear the output"
+              />
+            </>
           ) : null}
         </header>
         <ConnectionContainer
@@ -261,6 +360,7 @@ class App extends React.Component {
           isClientReady={isClientReady}
           onSubmit={this.onConsoleSubmit}
           onChange={this.onInputChange}
+          selectedBrowsingContextId={selectedBrowsingContextId}
         />
       </>
     );

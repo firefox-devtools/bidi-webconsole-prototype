@@ -40,29 +40,42 @@ class ConsoleOutput extends React.Component {
   }
 
   render() {
-    const { messages } = this.props;
+    const { selectedBrowsingContextId, messages } = this.props;
     return (
       <div className="webconsole-output" ref={this.containerRef}>
         {messages.map(
-          ({ id, level, message, source, type = "", dataType = "string" }) => (
-            <div
-              className={`message ${source} ${type} ${transformLevelToClass(
-                level
-              )}`}
-              key={id}
-            >
-              <span className="icon" />
-              <span className="message-body-wrapper">
-                <span className="message-flex-body">
-                  <span className="message-body devtools-monospace">
-                    <span className={`objectBox objectBox-${dataType}`}>
-                      {message}
+          ({
+            contextId,
+            contextUrl,
+            id,
+            level,
+            message,
+            source,
+            type = "",
+            dataType = "string",
+          }) =>
+            selectedBrowsingContextId === contextId ? (
+              <div
+                className={`message ${source} ${type} ${transformLevelToClass(
+                  level
+                )}`}
+                key={id}
+              >
+                <span className="icon" />
+                <span className="message-body-wrapper">
+                  <span className="message-flex-body">
+                    <span className="message-body devtools-monospace">
+                      <span className={`objectBox objectBox-${dataType}`}>
+                        {message}
+                      </span>
+                    </span>
+                    <span className="frame-link message-location devtools-monospace">
+                      {contextUrl}
                     </span>
                   </span>
                 </span>
-              </span>
-            </div>
-          )
+              </div>
+            ) : null
         )}
       </div>
     );

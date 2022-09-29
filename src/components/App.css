@@ -21,6 +21,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
 }
 
 header h3 {
@@ -41,5 +42,34 @@ header h3 {
 }
 
 .btn-clear:hover {
-  background-color: rgba(255,255,255,0.3);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.devtools-button {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  color: white;
+  transition: background-color 0.05s ease-in-out;
+  text-shadow: none;
+  padding: 4px;
+  white-space: nowrap;
+  background-image: url("../assets/select-arrow.svg");
+  background-position: right center;
+  background-position-x: right;
+  background-repeat: no-repeat;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  padding-inline: 2px 10px;
+  fill: var(--theme-icon-color);
+  width: 180px;
+  margin-left: auto;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.devtools-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }

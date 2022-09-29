@@ -8,6 +8,7 @@ const Console = ({
   isClientReady,
   onChange,
   onSubmit,
+  selectedBrowsingContextId,
 }) => {
   if (!isClientReady) {
     return null;
@@ -16,7 +17,10 @@ const Console = ({
   return (
     <div className="webconsole-app">
       <div className="flexible-output-input">
-        <ConsoleOutput messages={consoleOutput} />
+        <ConsoleOutput
+          messages={consoleOutput}
+          selectedBrowsingContextId={selectedBrowsingContextId}
+        />
         <ConsoleInput
           onChange={onChange}
           onSubmit={onSubmit}

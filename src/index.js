@@ -6,6 +6,7 @@ import "./css/codemirror.css";
 import "./css/variables.css";
 import "./css/webconsole.css";
 import "./css/reps.css";
+import "./css/toolbox.css";
 import "./css/index.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

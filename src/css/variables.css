@@ -235,6 +235,8 @@
   --theme-contrast-background-alpha: rgba(255, 233, 0, 0.4); /* Yellow 50-a40 */
   --theme-contrast-color: black;
   --theme-contrast-border: var(--yellow-60);
+  --tab-line-hover-color: rgba(0, 0, 0, 0.2);
+  --tab-line-selected-color: var(--blue-50);
 }
 
 :root.theme-dark {

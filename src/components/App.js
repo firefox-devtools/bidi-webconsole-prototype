@@ -5,6 +5,10 @@ import Console from "./Console";
 import { formatConsoleOutput } from "../format-utils/index.js";
 import BrowsingContextPicker from "./BrowsingContextPicker.js";
 import { findContextById } from "../utils.js";
+import Tabs from "./Tabs";
+
+import consoleIcon from "../assets/tool-webconsole.svg";
+import networlIcon from "../assets/tool-network.svg";
 
 import "./App.css";
 
@@ -340,17 +344,38 @@ class App extends React.Component {
           onClick={this.connectClient}
           onInputChange={this.onInputChange}
         />
-        <Console
-          consoleOutput={consoleOutput}
-          consoleInput={consoleInput}
-          isClientReady={isClientReady}
-          onSubmit={this.onConsoleSubmit}
-          onChange={this.onInputChange}
-          evaluationBrowsingContextId={evaluationBrowsingContextId}
-          filteringBrowsingContextId={filteringBrowsingContextId}
-          browsingContexts={browsingContexts}
-          setEvaluationBrowsingContext={this.setEvaluationBrowsingContext}
-        />
+        {isClientReady ? (
+          <Tabs
+            tabs={[
+              {
+                id: "console",
+                icon: consoleIcon,
+                title: "Console",
+                content: (
+                  <Console
+                    consoleOutput={consoleOutput}
+                    consoleInput={consoleInput}
+                    isClientReady={isClientReady}
+                    onSubmit={this.onConsoleSubmit}
+                    onChange={this.onInputChange}
+                    evaluationBrowsingContextId={evaluationBrowsingContextId}
+                    filteringBrowsingContextId={filteringBrowsingContextId}
+                    browsingContexts={browsingContexts}
+                    setEvaluationBrowsingContext={
+                      this.setEvaluationBrowsingContext
+                    }
+                  />
+                ),
+              },
+              {
+                id: "network",
+                icon: networlIcon,
+                title: "Network",
+                content: <p className="network-container">Coming soon...</p>,
+              },
+            ]}
+          />
+        ) : null}
       </>
     );
   }

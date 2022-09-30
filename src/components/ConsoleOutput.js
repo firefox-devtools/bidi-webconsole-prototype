@@ -24,6 +24,15 @@ class ConsoleOutput extends React.Component {
     this.containerRef = React.createRef();
   }
 
+  // Setting the locale to undefined so it picks up the browser's one
+  #intlDateTimeFormat = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    fractionalSecondDigits: 3,
+    hour12: false,
+  });
+
   scrollToBottom = () => {
     const messages = this.containerRef?.current.childNodes;
     if (messages && messages.length) {
@@ -51,6 +60,7 @@ class ConsoleOutput extends React.Component {
             level,
             message,
             source,
+            timestamp,
             type = "",
             dataType = "string",
           }) =>
@@ -61,6 +71,9 @@ class ConsoleOutput extends React.Component {
                 )}`}
                 key={id}
               >
+                <span className="timestamp">
+                  {this.#intlDateTimeFormat.format(new Date(timestamp))}
+                </span>
                 <span className="icon" />
                 <span className="message-body-wrapper">
                   <span className="message-flex-body">

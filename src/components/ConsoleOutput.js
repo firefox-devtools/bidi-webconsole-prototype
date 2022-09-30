@@ -64,6 +64,7 @@ class ConsoleOutput extends React.Component {
             type = "",
             dataType = "string",
           }) =>
+            selectedBrowsingContextId === null ||
             selectedBrowsingContextId === contextId ? (
               <div
                 className={`message ${source} ${type} ${transformLevelToClass(
@@ -82,9 +83,10 @@ class ConsoleOutput extends React.Component {
                         {message}
                       </span>
                     </span>
+                    {/* Uncomment when browsingContext.navigationStarted is supported
                     <span className="frame-link message-location devtools-monospace">
                       {contextUrl}
-                    </span>
+                    </span> */}
                   </span>
                 </span>
               </div>

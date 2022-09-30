@@ -1,0 +1,74 @@
+.BrowsingContextList {
+  position: absolute;
+  background-color: white;
+  right: 5px;
+  color: black;
+  width: 243px;
+  top: 55px;
+  z-index: 3;
+  border-radius: 2px;
+  border-color: var(--theme-splitter-color);
+  border-width: 1px;
+  border-style: solid;
+}
+
+.BrowsingContextList_input {
+  top: auto;
+  left: auto;
+  margin-top: 20px;
+  width: 200px;
+}
+
+.BrowsingContextList_input .BrowsingContext {
+  font-size: var(--theme-code-font-size);
+}
+
+.BrowsingContextList_input .BrowsingContextEl_selected {
+  background-position: 4px 4px;
+  background-size: 14px;
+}
+
+.BrowsingContextList ul {
+  padding: 0;
+  margin: 0;
+}
+
+.BrowsingContextList ul li {
+  list-style: none;
+  padding-left: 20px;
+  font-size: 12px;
+}
+
+.BrowsingContextList ul li button:hover {
+  color: var(--blue-60);
+}
+
+.BrowsingContextEl_selected {
+  background-image: url("../assets/check.svg");
+  background-repeat: no-repeat;
+  background-position: 3px 5px;
+}
+
+.BrowsingContextEl_top {
+  border-top-color: var(--theme-splitter-color);
+  border-top-width: 1px;
+  border-top-style: solid;
+  padding-right: 5px;
+}
+
+.BrowsingContextEl_top:first-child {
+  border-top: none;
+}
+
+.BrowsingContext {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  padding: 4px 0px;
+}

@@ -3,12 +3,15 @@ import ConsoleOutput from "./ConsoleOutput";
 import "./Console.css";
 
 const Console = ({
+  browsingContexts,
   consoleOutput,
   consoleValue,
   isClientReady,
   onChange,
   onSubmit,
-  selectedBrowsingContextId,
+  evaluationBrowsingContextId,
+  filteringBrowsingContextId,
+  setEvaluationBrowsingContext,
 }) => {
   if (!isClientReady) {
     return null;
@@ -19,12 +22,15 @@ const Console = ({
       <div className="flexible-output-input">
         <ConsoleOutput
           messages={consoleOutput}
-          selectedBrowsingContextId={selectedBrowsingContextId}
+          selectedBrowsingContextId={filteringBrowsingContextId}
         />
         <ConsoleInput
           onChange={onChange}
           onSubmit={onSubmit}
           value={consoleValue}
+          evaluationBrowsingContextId={evaluationBrowsingContextId}
+          browsingContexts={browsingContexts}
+          setSelectedBrowsingContext={setEvaluationBrowsingContext}
         />
       </div>
     </div>

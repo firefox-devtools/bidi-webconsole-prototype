@@ -1,65 +1,38 @@
 import React from "react";
+import BrowsingContextList from "./BrowsingContextList";
+import { findContextById } from "../utils";
 
 import "./BrowsingContextPicker.css";
 
-class BrowsingContextPicker extends React.Component {
-  constructor(props) {
-    super(props);
+const BrowsingContextPicker = ({
+  buttonClassName = "",
+  listClassName = "",
+  contexts,
+  selectedId,
+  setSelectedBrowsingContext,
+}) => {
+  const [isListVisible, setIsListVisible] = React.useState(false);
+  const selectedContext = findContextById(contexts, selectedId);
 
-    this.state = {
-      contexts: [],
-    };
-  }
-
-  exctractContextInfo = (context) => {
-    return {
-      id: context.context,
-      children: context.children.map(this.exctractContextInfo),
-      url: context.url,
-    };
-  };
-
-  renderList = (contexts, isTopLevel) => {
-    return (
-      <ul>
-        {contexts.map((context) => (
-          <li
-            key={context.id}
-            className={`${
-              this.props.selectedId === context.id
-                ? "BrowsingContextEl_selected"
-                : ""
-            }${isTopLevel ? " BrowsingContextEl_top" : ""}`}
-          >
-            <button
-              className="BrowsingContext"
-              onClick={(event) => {
-                event.stopPropagation();
-                this.props.setSelectedContext(context.id, context.url);
-                this.props.close();
-              }}
-              title={context.url}
-            >
-              {context.url}
-            </button>
-            {this.renderList(context.children)}
-          </li>
-        ))}
-      </ul>
-    );
-  };
-
-  render() {
-    if (!this.props.isVisible) {
-      return null;
-    }
-    const contextInfoList = this.props.contexts.map(this.exctractContextInfo);
-    return (
-      <div className="BrowsingContextPicker">
-        {this.renderList(contextInfoList, true)}
-      </div>
-    );
-  }
-}
+  return (
+    <>
+      <button
+        className={`webconsole-evaluation-selector-button devtools-button devtools-dropdown-button ${buttonClassName}`}
+        onClick={() => setIsListVisible(!isListVisible)}
+        title="Select a browsing context"
+      >
+        {selectedContext.url}
+      </button>
+      <BrowsingContextList
+        className={listClassName}
+        close={() => setIsListVisible(false)}
+        contexts={contexts}
+        selectedId={selectedId}
+        setSelectedContext={setSelectedBrowsingContext}
+        isVisible={isListVisible}
+      />
+    </>
+  );
+};
 
 export default BrowsingContextPicker;

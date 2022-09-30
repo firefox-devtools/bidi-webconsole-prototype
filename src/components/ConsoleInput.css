@@ -23,6 +23,13 @@
   padding-inline: 24px;
   background-position: 8px;
   min-height: 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-auto-flow: column;
+  outline: none;
+  position: static !important;
 }
 
 .jsterm-input-container:focus-within {
@@ -31,4 +38,10 @@
 
 .cm-focused {
   outline: none !important;
+}
+
+.webconsole-input-buttons {
+  grid-column: -1 / -2;
+  display: flex;
+  align-items: flex-start;
 }

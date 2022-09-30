@@ -4,6 +4,7 @@ import ConnectionContainer from "./ConnectionContainer";
 import Console from "./Console";
 import { formatConsoleOutput } from "../format-utils/index.js";
 import BrowsingContextPicker from "./BrowsingContextPicker.js";
+import { findContextById } from "../utils.js";
 
 import "./App.css";
 
@@ -46,6 +47,7 @@ const MESSAGE_LEVEL = {
 
 class App extends React.Component {
   #client;
+  #evaluationBrowsingContextUrl;
   #isReconnecting;
   #lastMessageId;
 
@@ -56,13 +58,12 @@ class App extends React.Component {
       browsingContexts: [],
       consoleInput: "",
       consoleOutput: [],
-      isBrowsingContextVisible: false,
+      evaluationBrowsingContextId: null,
+      filteringBrowsingContextId: null,
       isClientReady: false,
       isConnectButtonDisabled: false,
       isConnectingToExistingSession: false,
       host: "localhost:9222",
-      selectedBrowsingContextId: null,
-      selectedBrowsingContextUrl: null,
     };
 
     this.#client = new Client();
@@ -118,7 +119,7 @@ class App extends React.Component {
     // eslint-disable-next-line default-case
     switch (data.method) {
       case "log.entryAdded": {
-        const context = this.#findBrowsingContextById(
+        const context = findContextById(
           this.state.browsingContexts,
           data.params.source.context
         );
@@ -146,13 +147,13 @@ class App extends React.Component {
       case "browsingContext.contextCreated":
       case "browsingContext.load": {
         const contextList = await this.#requestBrowsingContexts();
-        const selectedContext = this.#findBrowsingContextById(
+        const selectedContext = findContextById(
           contextList,
-          this.state.selectedBrowsingContextId
+          this.state.evaluationBrowsingContextId
         );
+        this.#evaluationBrowsingContextUrl = selectedContext.url;
         this.setState({
           browsingContexts: contextList,
-          selectedBrowsingContextUrl: selectedContext.url,
         });
         break;
       }
@@ -206,10 +207,10 @@ class App extends React.Component {
 
     const contextList = await this.#requestBrowsingContexts();
     const topContext = contextList[0];
+    this.#evaluationBrowsingContextUrl = topContext.url;
     this.setState({
       browsingContexts: contextList,
-      selectedBrowsingContextId: topContext.context,
-      selectedBrowsingContextUrl: topContext.url,
+      evaluationBrowsingContextId: topContext.context,
       isClientReady: true,
     });
   };
@@ -228,37 +229,16 @@ class App extends React.Component {
     return responce.result.contexts;
   };
 
-  #findBrowsingContextById(contexts, id) {
-    for (let context of contexts) {
-      if (context.context === id) return context;
-
-      if (context.children) {
-        let desiredContext = this.#findBrowsingContextById(
-          context.children,
-          id
-        );
-        if (desiredContext) return desiredContext;
-      }
-    }
-    return false;
-  }
-
-  closeBrowsingContextPicker = () => {
+  setEvaluationBrowsingContext = (browsingContextId, browsingContextUrl) => {
+    this.#evaluationBrowsingContextUrl = browsingContextUrl;
     this.setState({
-      isBrowsingContextVisible: false,
+      evaluationBrowsingContextId: browsingContextId,
     });
   };
 
-  toggleBrowsingContextPicker = async () => {
+  setFilteringBrowsingContext = (browsingContextId) => {
     this.setState({
-      isBrowsingContextVisible: !this.state.isBrowsingContextVisible,
-    });
-  };
-
-  setSelectedBrowsingContext = (browsingContextId, browsingContextUrl) => {
-    this.setState({
-      selectedBrowsingContextId: browsingContextId,
-      selectedBrowsingContextUrl: browsingContextUrl,
+      filteringBrowsingContextId: browsingContextId,
     });
   };
 
@@ -267,8 +247,8 @@ class App extends React.Component {
       consoleOutput: [
         ...state.consoleOutput,
         {
-          contextId: this.state.selectedBrowsingContextId,
-          contextUrl: this.state.selectedBrowsingContextUrl,
+          contextId: this.state.evaluationBrowsingContextId,
+          contextUrl: this.#evaluationBrowsingContextUrl,
           id: this.#getNewMessageId(),
           message: value,
           source: "javascript",
@@ -283,7 +263,7 @@ class App extends React.Component {
       expression: value,
       awaitPromise: false,
       target: {
-        context: this.state.selectedBrowsingContextId,
+        context: this.state.evaluationBrowsingContextId,
       },
     });
 
@@ -291,8 +271,8 @@ class App extends React.Component {
       consoleOutput: [
         ...state.consoleOutput,
         {
-          contextId: this.state.selectedBrowsingContextId,
-          contextUrl: this.state.selectedBrowsingContextUrl,
+          contextId: this.state.evaluationBrowsingContextId,
+          contextUrl: this.#evaluationBrowsingContextUrl,
           id: this.#getNewMessageId(),
           message: responce.result.result
             ? formatConsoleOutput(responce.result.result)
@@ -320,12 +300,11 @@ class App extends React.Component {
       browsingContexts,
       consoleInput,
       consoleOutput,
-      isBrowsingContextVisible,
       isClientReady,
       isConnectButtonDisabled,
       host,
-      selectedBrowsingContextId,
-      selectedBrowsingContextUrl,
+      evaluationBrowsingContextId,
+      filteringBrowsingContextId,
     } = this.state;
 
     return (
@@ -334,20 +313,17 @@ class App extends React.Component {
           <h3>BiDi WebConsole Prototype</h3>
           {isClientReady ? (
             <>
-              <button
-                className="webconsole-evaluation-selector-button devtools-button devtools-dropdown-button"
-                onClick={this.toggleBrowsingContextPicker}
-                title="Select a browsing context"
-              >
-                {selectedBrowsingContextUrl}
-              </button>
               <BrowsingContextPicker
-                close={this.closeBrowsingContextPicker}
-                contexts={browsingContexts}
-                length={browsingContexts.length}
-                selectedId={selectedBrowsingContextId}
-                setSelectedContext={this.setSelectedBrowsingContext}
-                isVisible={isBrowsingContextVisible}
+                contexts={[
+                  {
+                    context: null,
+                    url: "Top context",
+                    children: [],
+                  },
+                  ...browsingContexts,
+                ]}
+                selectedId={filteringBrowsingContextId}
+                setSelectedBrowsingContext={this.setFilteringBrowsingContext}
               />
               <button
                 className="btn-clear"
@@ -370,7 +346,10 @@ class App extends React.Component {
           isClientReady={isClientReady}
           onSubmit={this.onConsoleSubmit}
           onChange={this.onInputChange}
-          selectedBrowsingContextId={selectedBrowsingContextId}
+          evaluationBrowsingContextId={evaluationBrowsingContextId}
+          filteringBrowsingContextId={filteringBrowsingContextId}
+          browsingContexts={browsingContexts}
+          setEvaluationBrowsingContext={this.setEvaluationBrowsingContext}
         />
       </>
     );

@@ -8,4 +8,5 @@ body {
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
+  background-color: var(--theme-body-background);
 }

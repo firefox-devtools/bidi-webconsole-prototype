@@ -1,5 +1,5 @@
 :root {
-  --highlight: purple;
+  --highlight: var(--theme-body-alternate-emphasized-background);
 }
 
 #root {
@@ -14,33 +14,35 @@
 }
 
 header {
-  background: var(--highlight);
-  margin: 0;
-  padding: 20px;
-  color: white;
   display: flex;
+  padding: 0.5em 1em;
+  line-height: 1.5;
+  background-color: var(--theme-body-alternate-emphasized-background);
+  font-family: system-ui, -apple-system, sans-serif;
+  border-block-end: 1px solid var(--theme-splitter-color);
+  border-block-start: 1px solid var(--theme-splitter-color);
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
 }
 
 header h3 {
-  font-size: 30px;
+  font-size: 14px;
   margin: 0;
+  font-weight: normal;
 }
 
 .btn-clear {
   background-image: url("../assets/delete.svg");
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 24px;
+  background-size: 18px;
   border-radius: 50%;
   background-color: transparent;
   border: none;
-  height: 40px;
-  width: 40px;
+  height: 25px;
+  width: 25px;
+  margin-left: 10px;
 }
 
 .btn-clear:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--blue-50-a30);
 }

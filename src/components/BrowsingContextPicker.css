@@ -1,9 +1,12 @@
+.BrowsingContextPicker {
+  margin-left: auto;
+}
+
 .devtools-button {
   appearance: none;
   background: transparent;
   border: none;
   border-radius: 2px;
-  color: white;
   transition: background-color 0.05s ease-in-out;
   text-shadow: none;
   padding: 4px;
@@ -16,18 +19,21 @@
   overflow: hidden;
   padding-inline: 2px 10px;
   fill: var(--theme-icon-color);
-  width: 180px;
-  margin-left: auto;
-  font-size: 14px;
-  cursor: pointer;
+  width: 150px;
+  font-size: 12px;
   text-align: left;
+  color: var(--console-message-color);
+  border-radius: 4px;
 }
 
 .devtools-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--blue-50-a30);
 }
 
 .webconsole-evaluation-selector-button_input {
-  color: var(--console-message-color);
   font-size: var(--theme-code-font-size);
+}
+
+.webconsole-evaluation-selector-button_input:hover {
+  background-color: var(--theme-toolbar-hover);
 }

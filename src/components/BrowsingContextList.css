@@ -3,8 +3,8 @@
   background-color: white;
   right: 5px;
   color: black;
-  width: 243px;
-  top: 55px;
+  width: 196px;
+  top: 34px;
   z-index: 3;
   border-radius: 2px;
   border-color: var(--theme-splitter-color);
@@ -15,17 +15,11 @@
 .BrowsingContextList_input {
   top: auto;
   left: auto;
-  margin-top: 20px;
-  width: 200px;
+  width: 169px;
 }
 
 .BrowsingContextList_input .BrowsingContext {
   font-size: var(--theme-code-font-size);
-}
-
-.BrowsingContextList_input .BrowsingContextEl_selected {
-  background-position: 4px 4px;
-  background-size: 14px;
 }
 
 .BrowsingContextList ul {
@@ -46,7 +40,8 @@
 .BrowsingContextEl_selected {
   background-image: url("../assets/check.svg");
   background-repeat: no-repeat;
-  background-position: 3px 5px;
+  background-position: 4px 4px;
+  background-size: 14px;
 }
 
 .BrowsingContextEl_top {
@@ -67,8 +62,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  cursor: pointer;
   width: 100%;
   text-align: left;
   padding: 4px 0px;
+  font-size: inherit;
 }

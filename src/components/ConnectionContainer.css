@@ -3,20 +3,32 @@
   padding: 0 20px;
 }
 
+#connection-container h4 {
+  font-size: 12px;
+  font-weight: normal;
+}
+
 #connect {
   width: 100px;
   text-align: center;
-  border: 0;
+  border: 1px solid var(--theme-toolbar-selected-color);
   background: var(--highlight);
   border-radius: 2px;
   height: 22px;
   padding: 0 10px;
-  color: white;
+  color: var(--theme-body-color);
   cursor: pointer;
+  font-size: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+#connect:hover {
+  background-color: var(--blue-50-a30);
 }
 
 #connect[disabled] {
   background: #b9b9b9;
+  border-color: #b9b9b9;
   cursor: default;
 }
 

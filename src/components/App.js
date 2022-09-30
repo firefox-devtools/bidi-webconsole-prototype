@@ -115,7 +115,6 @@ class App extends React.Component {
   };
 
   #onWebsocketMessage = async (_, data) => {
-    console.log({ data });
     // eslint-disable-next-line default-case
     switch (data.method) {
       case "log.entryAdded": {
@@ -314,6 +313,7 @@ class App extends React.Component {
           {isClientReady ? (
             <>
               <BrowsingContextPicker
+                buttonTitle="Select a browsing context to filter console messages"
                 contexts={[
                   {
                     context: null,

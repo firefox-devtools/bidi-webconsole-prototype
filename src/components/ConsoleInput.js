@@ -67,6 +67,7 @@ class ConsoleInput extends React.Component {
         <div className="webconsole-input-buttons">
           <BrowsingContextPicker
             buttonClassName="webconsole-evaluation-selector-button_input"
+            buttonTitle="Select a browsing context to evaluate javascript"
             listClassName="BrowsingContextList_input"
             contexts={browsingContexts}
             selectedId={evaluationBrowsingContextId}

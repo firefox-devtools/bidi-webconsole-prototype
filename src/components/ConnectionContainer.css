@@ -21,13 +21,28 @@
 }
 
 #connection-help {
-  margin-top: 10px;
+  margin-bottom: 10px;
   font-size: 0.8em;
 }
 
 #connection-help span {
-  background-color: #aaa;
-  color: white;
-  padding: 3px 6px;
-  border-radius: 2px;
+  border: 1px solid var(--highlight);
+  color: var(--highlight);
+  padding: 2px 4px;
+  border-radius: 0px;
 }
+
+#copy-to-clipboard {
+  border: none;
+  background: transparent;
+  color: var(--highlight);
+  cursor: pointer;
+  text-decoration: underline;
+  visibility: hidden;
+}
+
+#connection-help:hover #copy-to-clipboard {
+  visibility: visible;
+}
+
+

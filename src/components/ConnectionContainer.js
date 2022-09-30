@@ -11,9 +11,31 @@ const ConnectionContainer = ({
     return null;
   }
 
+  const connectionArguments = `--remote-debugging-port --remote-allow-origins=${window.location.origin}`;
+
   return (
     <div id="connection-container">
       <h4>Connect to Firefox</h4>
+      <div id="connection-help">
+        Start Firefox with{" "}
+        <span id="connection-help-arguments">
+          {connectionArguments}
+        </span>
+        <button
+          id="copy-to-clipboard"
+          onClick={(event) => {
+            event.stopPropagation();
+            navigator.clipboard.writeText(connectionArguments);
+
+            event.target.textContent = "copied!";
+            window.setTimeout(
+              () => (event.target.textContent = "copy to clipboard"),
+              1000
+            );
+          }}>
+          copy to clipboard
+        </button>
+      </div>
       <div>
         <input
           type="text"
@@ -30,13 +52,6 @@ const ConnectionContainer = ({
         >
           connect
         </button>
-      </div>
-      <div id="connection-help">
-        Start Firefox with{" "}
-        <span id="connection-help-arguments">
-          --remote-debugging-port --remote-allow-origins=
-          {window.location.origin}
-        </span>
       </div>
     </div>
   );

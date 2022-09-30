@@ -47,6 +47,7 @@ const MESSAGE_LEVEL = {
 class App extends React.Component {
   #client;
   #isReconnecting;
+  #lastMessageId;
 
   constructor(props) {
     super(props);
@@ -91,6 +92,12 @@ class App extends React.Component {
     }
   }
 
+  #getNewMessageId() {
+    const newId = (this.#lastMessageId || 0) + 1;
+    this.#lastMessageId = newId;
+    return newId;
+  }
+
   connectClient = () => {
     console.log("Attempt to create a connection to a new session");
     this.setState({
@@ -121,7 +128,7 @@ class App extends React.Component {
             {
               contextId: data.params.source.context,
               contextUrl: context?.url ?? "",
-              id: data.params.timestamp,
+              id: this.#getNewMessageId(),
               message: data.params.text,
               source:
                 data.params.type === "console"
@@ -262,7 +269,7 @@ class App extends React.Component {
         {
           contextId: this.state.selectedBrowsingContextId,
           contextUrl: this.state.selectedBrowsingContextUrl,
-          id: Date.now(),
+          id: this.#getNewMessageId(),
           message: value,
           source: "javascript",
           timestamp: Date.now(),
@@ -286,7 +293,7 @@ class App extends React.Component {
         {
           contextId: this.state.selectedBrowsingContextId,
           contextUrl: this.state.selectedBrowsingContextUrl,
-          id: responce.id,
+          id: this.#getNewMessageId(),
           message: responce.result.result
             ? formatConsoleOutput(responce.result.result)
             : responce.result.exceptionDetails.text,

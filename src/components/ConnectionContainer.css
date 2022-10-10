@@ -38,8 +38,8 @@
 }
 
 #connection-help span {
-  border: 1px solid var(--highlight);
-  color: var(--highlight);
+  border: 1px solid var(--theme-toolbar-selected-color);
+  color: var(--theme-body-color);
   padding: 2px 4px;
   border-radius: 0px;
 }
@@ -47,7 +47,7 @@
 #copy-to-clipboard {
   border: none;
   background: transparent;
-  color: var(--highlight);
+  color: var(--theme-body-color);
   cursor: pointer;
   text-decoration: underline;
   visibility: hidden;
@@ -56,5 +56,3 @@
 #connection-help:hover #copy-to-clipboard {
   visibility: visible;
 }
-
-

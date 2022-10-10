@@ -8,7 +8,29 @@ class BrowsingContextList extends React.Component {
 
     this.state = {
       contexts: [],
+      style: {},
     };
+
+    this.ref = React.createRef();
+  }
+
+  componentDidUpdate(props) {
+    // When the component get visible, check if it doesn't fit at the bottom of the button
+    // if not set the styles for the position above the button
+    if (!props.isVisible && this.props.isVisible) {
+      const menuHeight = this.ref.current?.getBoundingClientRect().height || 0;
+      const menuPosition =
+        this.ref.current?.parentElement.getBoundingClientRect().top || 0;
+      const inputHeight = 21;
+
+      if (window.innerHeight - menuPosition - inputHeight < menuHeight) {
+        this.setState({
+          style: {
+            bottom: `${window.innerHeight - menuPosition}px`,
+          },
+        });
+      }
+    }
   }
 
   exctractContextInfo = (context) => {
@@ -55,7 +77,11 @@ class BrowsingContextList extends React.Component {
     }
     const contextInfoList = this.props.contexts.map(this.exctractContextInfo);
     return (
-      <div className={`BrowsingContextList ${this.props.className || ""}`}>
+      <div
+        className={`BrowsingContextList ${this.props.className || ""}`}
+        ref={this.ref}
+        style={this.state.style}
+      >
         {this.renderList(contextInfoList, true)}
       </div>
     );

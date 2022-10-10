@@ -72,7 +72,7 @@ class ConsoleOutput extends React.Component {
                 )}`}
                 key={id}
               >
-                <span className="timestamp">
+                <span className="timestamp devtools-monospace">
                   {this.#intlDateTimeFormat.format(new Date(timestamp))}
                 </span>
                 <span className="icon" />

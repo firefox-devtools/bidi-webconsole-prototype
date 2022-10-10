@@ -3,7 +3,7 @@
 A simple webconsole UI relying on WebDriver BiDi events and commands.\
 A user can connect the webconsole to a Firefox instance, see the console events and execute the javascript, similar to a browser console.
 
-[Demo](https://lutien.github.io/bidi-webconsole-prototype/)\
+[Demo](https://firefox-dev.tools/bidi-webconsole-prototype/)\
 After running the UI, follow the instructions on the screen on how to run a Firefox instance and click `Connect`.
 
 ## How to develop

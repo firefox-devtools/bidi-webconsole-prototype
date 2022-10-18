@@ -121,12 +121,6 @@ class ConsoleInput extends React.Component {
     this.#codeMirrorEditor.focus();
   }
 
-  shouldComponentUpdate() {
-    // Don't re-render once we have the editor created as we don't
-    // want React to interact with CodeMirror.
-    return !this.#codeMirrorEditor;
-  }
-
   /**
    * Check if the caret is at a location that allows selecting the previous item
    * in history when the user presses the Up arrow key.

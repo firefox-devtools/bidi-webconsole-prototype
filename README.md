@@ -6,6 +6,16 @@ A user can connect the webconsole to a Firefox instance, see the console events 
 [Demo](https://firefox-dev.tools/bidi-webconsole-prototype/)\
 After running the UI, follow the instructions on the screen on how to run a Firefox instance and click `Connect`.
 
+<img src="https://user-images.githubusercontent.com/5276969/196655300-7916c8f3-9a85-4882-ba5b-0d8f98e2bdf6.gif" alt="" />
+
+<details>
+    <summary>See more video instructions</summary>
+    <p>Filtering the console messages and evaluating code in the different contexts</p>
+    <img src="https://user-images.githubusercontent.com/5276969/196655982-88e03597-00c4-4aa3-a79b-235781473ca1.gif" alt="" />
+    <p>Evaluating the code with different data types</p>
+    <img src="https://user-images.githubusercontent.com/5276969/196656619-e0c62acb-2d14-4897-b607-453a14071834.gif" alt="" />
+</details>
+
 ## How to develop
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

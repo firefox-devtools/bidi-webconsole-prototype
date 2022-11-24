@@ -124,13 +124,13 @@ class App extends React.Component {
       case "log.entryAdded": {
         const context = findContextById(
           this.state.browsingContexts,
-          data.params.source.context
+          data.params.source?.context
         );
         this.setState((state) => ({
           consoleOutput: [
             ...state.consoleOutput,
             {
-              contextId: data.params.source.context,
+              contextId: data.params.source?.context,
               contextUrl: context?.url ?? "",
               id: this.#getNewMessageId(),
               message: data.params.text,
@@ -176,14 +176,14 @@ class App extends React.Component {
     // If we connected to an existing session, status `ready` will be false.
     // Only attempt to create a new session if `ready` is true.
     const canCreateNewSession = sessionStatusResponse.result.ready;
-    const { isConnectingToExistingSession } = this.state;
-    if (!canCreateNewSession && !isConnectingToExistingSession) {
-      console.log(
-        "Unable to establish a new connection or to reuse an existing one," +
-          " please restart the target Firefox and reconnect"
-      );
-      return;
-    }
+    // const { isConnectingToExistingSession } = this.state;
+    // if (!canCreateNewSession && !isConnectingToExistingSession) {
+    //   console.log(
+    //     "Unable to establish a new connection or to reuse an existing one," +
+    //       " please restart the target Firefox and reconnect"
+    //   );
+    //   return;
+    // }
 
     if (canCreateNewSession) {
       console.log("Creating a new session");

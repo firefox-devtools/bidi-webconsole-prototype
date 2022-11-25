@@ -1,0 +1,9 @@
+.bidi-log {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+
+.bidi-log__list {
+  margin: 0;
+  padding: 0;
+}

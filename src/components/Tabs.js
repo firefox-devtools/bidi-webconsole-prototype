@@ -1,7 +1,6 @@
 import React from "react";
 
-const Tabs = ({ tabs }) => {
-  const [activeTab, setActiveTab] = React.useState("console");
+const Tabs = ({ tabs, activeTab, setActiveTab }) => {
   const activeTabContent = tabs.find((tab) => tab.id === activeTab).content;
 
   return (

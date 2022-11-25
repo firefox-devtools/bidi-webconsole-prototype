@@ -3,12 +3,14 @@ import Client from "../bidi-client/client.js";
 import ConnectionContainer from "./ConnectionContainer";
 import Console from "./Console";
 import { formatConsoleOutput } from "../format-utils/index.js";
+import BiDiLog from "./BiDiLog.js";
 import BrowsingContextPicker from "./BrowsingContextPicker.js";
 import { findContextById } from "../utils.js";
 import Tabs from "./Tabs";
 
 import consoleIcon from "../assets/tool-webconsole.svg";
-import networlIcon from "../assets/tool-network.svg";
+// import networlIcon from "../assets/tool-network.svg";
+import bidiLogIcon from "../assets/report.svg";
 
 import "./App.css";
 
@@ -59,7 +61,9 @@ class App extends React.Component {
     super(props);
 
     this.state = {
+      activeTab: "console",
       browsingContexts: [],
+      bidiLog: [],
       consoleInput: "",
       consoleOutput: [],
       evaluationBrowsingContextId: null,
@@ -70,7 +74,7 @@ class App extends React.Component {
       host: "localhost:9222",
     };
 
-    this.#client = new Client();
+    this.#client = new Client(this.updateBidiLog);
     this.#client.on("websocket-close", this.#onWebsocketClose);
     this.#client.on("websocket-open", this.#onWebsocketOpen);
     this.#client.on("websocket-message", this.#onWebsocketMessage);
@@ -218,10 +222,17 @@ class App extends React.Component {
     });
   };
 
+  // Clear the log depending on the selected tab
   #onClearButtonClick = () => {
-    this.setState(() => ({
-      consoleOutput: [],
-    }));
+    if (this.state.activeTab === 'console') {
+      this.setState(() => ({
+        consoleOutput: [],
+      }));
+    } else {
+      this.setState(() => ({
+        bidiLog: [],
+      }));
+    }
   };
 
   #requestBrowsingContexts = async () => {
@@ -230,6 +241,12 @@ class App extends React.Component {
       {}
     );
     return responce.result.contexts;
+  };
+
+  setActiveTab = (tab) => {
+    this.setState({
+      activeTab: tab,
+    });
   };
 
   setEvaluationBrowsingContext = (browsingContextId, browsingContextUrl) => {
@@ -298,8 +315,16 @@ class App extends React.Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
+  updateBidiLog = (entry) => {
+    this.setState((state) => ({
+      bidiLog: [...state.bidiLog, entry],
+    }));
+  };
+
   render() {
     const {
+      activeTab,
+      bidiLog,
       browsingContexts,
       consoleInput,
       consoleOutput,
@@ -346,6 +371,8 @@ class App extends React.Component {
         />
         {isClientReady ? (
           <Tabs
+            activeTab={activeTab}
+            setActiveTab={this.setActiveTab}
             tabs={[
               {
                 id: "console",
@@ -368,11 +395,17 @@ class App extends React.Component {
                 ),
               },
               {
-                id: "network",
-                icon: networlIcon,
-                title: "Network",
-                content: <p className="network-container">Coming soon...</p>,
+                id: "bidi-log",
+                icon: bidiLogIcon,
+                title: "BiDi log",
+                content: <BiDiLog log={bidiLog} />,
               },
+              // {
+              //   id: "network",
+              //   icon: networlIcon,
+              //   title: "Network",
+              //   content: <p className="network-container">Coming soon...</p>,
+              // },
             ]}
           />
         ) : null}

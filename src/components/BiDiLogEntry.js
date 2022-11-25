@@ -19,7 +19,7 @@ const BiDiLogEntry = ({ entry }) => {
           expanded ? "entry__message_expanded" : ""
         }`}
       >
-        {entry.type === "response" || entry.type === "request"
+        {entry.type !== "ws"
           ? JSON.stringify(JSON.parse(entry.message), null, 4)
           : entry.message}
       </span>

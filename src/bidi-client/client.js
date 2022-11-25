@@ -22,7 +22,7 @@ class Client extends EventEmitter {
     this.#websocketClient.on("message", (eventName, data) => {
       this.#updateLog({
         message: JSON.stringify(data),
-        type: "response",
+        type: data.id ? "response" : "event",
       });
       this.#forwardWebsocketEvent(eventName, data);
     });

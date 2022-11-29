@@ -55,7 +55,7 @@ class Client extends EventEmitter {
     this.#websocketClient.sendMessage(msg);
     this.#updateLog({
       message: JSON.stringify(msg),
-      type: "request",
+      type: "command",
     });
     return id;
   }

@@ -8,6 +8,11 @@
   max-height: 100%;
 }
 
+.network-app {
+  max-height: 100%;
+  overflow-y: hidden;
+}
+
 .webconsole-app {
   max-height: 100%;
   overflow-y: scroll;
@@ -76,4 +81,10 @@ header h3 {
 
 .network-container {
   text-align: center;
+}
+
+.ellipsis-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

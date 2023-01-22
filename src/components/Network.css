@@ -1,9 +1,11 @@
 .theme-dark {
+  --table-selection-background-hover: rgba(53, 59, 72, 1);
   --table-splitter-color: var(--grey-70);
   --table-zebra-background: rgba(255,255,255,0.05);
 }
 
 .theme-light {
+  --table-selection-background-hover: rgba(209, 232, 255, 0.8);
   --table-splitter-color: var(--grey-20);
   --table-zebra-background: rgba(247, 247, 247, 0.8);
 }
@@ -42,4 +44,9 @@
 
 .network-row:nth-child(odd) {
   background: var(--table-zebra-background);
+}
+
+.network-row:hover,
+.network-row:nth-child(odd):hover {
+  background: var(--table-selection-background-hover);
 }

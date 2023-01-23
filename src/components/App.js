@@ -262,6 +262,10 @@ class App extends React.Component {
       this.setState(() => ({
         consoleOutput: [],
       }));
+    } else if (this.state.activeTab === "network") {
+      this.setState(() => ({
+        networkEntries: [],
+      }));
     } else {
       this.setState(() => ({
         bidiLog: [],

@@ -303,10 +303,11 @@ class App extends React.Component {
         entry.contextId === context && entry.request.url === url
       );
 
-      let relativeTime = +Infinity;
+      let relativeTime = +Infinity, startedTime = -1;
       if (firstRequest) {
         const timings = firstRequest.request.timings;
-        relativeTime = timestamp - (timings.requestTime / 1000);
+        startedTime = timings.requestTime / 1000;
+        relativeTime = timestamp - startedTime;
         relativeTime = relativeTime.toFixed(1);
         firstRequest.isFirstRequest = true;
       }
@@ -317,6 +318,7 @@ class App extends React.Component {
           {
             contextId: context,
             relativeTime,
+            startedTime,
             timestamp,
             type,
             url,

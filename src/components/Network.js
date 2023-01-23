@@ -1,3 +1,5 @@
+import React from "react";
+import NetworkFooter from "./NetworkFooter";
 import "./Network.css";
 
 const Network = ({
@@ -6,11 +8,15 @@ const Network = ({
   networkEntries,
   pageTimings,
 }) => {
+
   if (!isClientReady) {
     return null;
   }
 
   const entries = networkEntries.filter(({ contextId }) =>
+            !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
+
+  const timings = pageTimings.filter(({ contextId }) =>
             !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
 
   return (
@@ -55,17 +61,10 @@ const Network = ({
             </div>
         )}
       </div>
-      <div className="network-footer">
-        <span className="network-summary-item">
-          {entries.length} requests
-        </span>
-        <span className="network-summary-item network-summary-timing">
-          DOMContentLoaded: {pageTimings.findLast(t => t.type === "domContentLoaded")?.relativeTime}ms
-        </span>
-        <span className="network-summary-item network-summary-timing">
-          load: {pageTimings.findLast(t => t.type === "load")?.relativeTime}ms
-        </span>
-      </div>
+      <NetworkFooter
+        filteredNetworkEntries={entries}
+        filteredPageTimings={timings}
+      />
     </div>
   );
 };

@@ -1,9 +1,10 @@
 {
   "files": {
-    "main.css": "/bidi-webconsole-prototype/static/css/main.b431241d.css",
-    "main.js": "/bidi-webconsole-prototype/static/js/main.28bea063.js",
+    "main.css": "/bidi-webconsole-prototype/static/css/main.f1396daa.css",
+    "main.js": "/bidi-webconsole-prototype/static/js/main.7620cfc1.js",
     "index.html": "/bidi-webconsole-prototype/index.html",
     "static/media/delete.svg": "/bidi-webconsole-prototype/static/media/delete.8ad65d53c79f6eefb027.svg",
+    "static/media/tool-network.svg": "/bidi-webconsole-prototype/static/media/tool-network.883c9db6870e67fd404fd4d5adeb4965.svg",
     "static/media/report.svg": "/bidi-webconsole-prototype/static/media/report.0a9d5b091863da1fb213fa54a56cdba1.svg",
     "static/media/tool-webconsole.svg": "/bidi-webconsole-prototype/static/media/tool-webconsole.72fd55c9a97e12e8cd289ab1321b980f.svg",
     "static/media/select-arrow.svg": "/bidi-webconsole-prototype/static/media/select-arrow.4da21bd302a50977d0bf.svg",
@@ -13,11 +14,11 @@
     "static/media/error-small.svg": "/bidi-webconsole-prototype/static/media/error-small.1e8a89aeaf3c8c29679f.svg",
     "static/media/info-small.svg": "/bidi-webconsole-prototype/static/media/info-small.396b2f03b8d8aed7e3f1.svg",
     "static/media/return.svg": "/bidi-webconsole-prototype/static/media/return.9f94ae71de1f6bdb1979.svg",
-    "main.b431241d.css.map": "/bidi-webconsole-prototype/static/css/main.b431241d.css.map",
-    "main.28bea063.js.map": "/bidi-webconsole-prototype/static/js/main.28bea063.js.map"
+    "main.f1396daa.css.map": "/bidi-webconsole-prototype/static/css/main.f1396daa.css.map",
+    "main.7620cfc1.js.map": "/bidi-webconsole-prototype/static/js/main.7620cfc1.js.map"
   },
   "entrypoints": [
-    "static/css/main.b431241d.css",
-    "static/js/main.28bea063.js"
+    "static/css/main.f1396daa.css",
+    "static/js/main.7620cfc1.js"
   ]
 }

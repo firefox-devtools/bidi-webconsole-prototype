@@ -5,11 +5,12 @@ import Console from "./Console";
 import { formatConsoleOutput } from "../format-utils/index.js";
 import BiDiLog from "./BiDiLog.js";
 import BrowsingContextPicker from "./BrowsingContextPicker.js";
+import Network from "./Network";
 import { findContextById } from "../utils.js";
 import Tabs from "./Tabs";
 
 import consoleIcon from "../assets/tool-webconsole.svg";
-// import networlIcon from "../assets/tool-network.svg";
+import networkIcon from "../assets/tool-network.svg";
 import bidiLogIcon from "../assets/report.svg";
 
 import "./App.css";
@@ -72,6 +73,7 @@ class App extends React.Component {
       isConnectButtonDisabled: false,
       isConnectingToExistingSession: false,
       host: "localhost:9222",
+      networkEntries: [],
     };
 
     this.#client = new Client(this.updateBidiLog);
@@ -164,6 +166,36 @@ class App extends React.Component {
         });
         break;
       }
+      case "network.beforeRequestSent": {
+        this.setState((state) => ({
+          networkEntries: [
+            ...state.networkEntries,
+            {
+              contextId: data.params.context,
+              id:
+                data.params.request.request + data.params.request.redirectCount,
+              url: data.params.request.url,
+              request: data.params.request,
+            },
+          ],
+        }));
+        break;
+      }
+      case "network.responseCompleted": {
+        this.setState((state) => {
+          const entry = state.networkEntries.find(
+            (e) =>
+              e.request.request === data.params.request.request &&
+              e.request.redirectCount === data.params.request.redirectCount
+          );
+          entry.request = data.params.request;
+          entry.response = data.params.response;
+          return {
+            networkEntries: [...state.networkEntries],
+          };
+        });
+        break;
+      }
     }
   };
 
@@ -209,6 +241,8 @@ class App extends React.Component {
         "browsingContext.contextCreated",
         "browsingContext.load",
         "log.entryAdded",
+        "network.beforeRequestSent",
+        "network.responseCompleted",
       ],
     });
 
@@ -224,9 +258,13 @@ class App extends React.Component {
 
   // Clear the log depending on the selected tab
   #onClearButtonClick = () => {
-    if (this.state.activeTab === 'console') {
+    if (this.state.activeTab === "console") {
       this.setState(() => ({
         consoleOutput: [],
+      }));
+    } else if (this.state.activeTab === "network") {
+      this.setState(() => ({
+        networkEntries: [],
       }));
     } else {
       this.setState(() => ({
@@ -328,11 +366,12 @@ class App extends React.Component {
       browsingContexts,
       consoleInput,
       consoleOutput,
-      isClientReady,
-      isConnectButtonDisabled,
-      host,
       evaluationBrowsingContextId,
       filteringBrowsingContextId,
+      host,
+      isClientReady,
+      isConnectButtonDisabled,
+      networkEntries,
     } = this.state;
 
     return (
@@ -400,12 +439,18 @@ class App extends React.Component {
                 title: "BiDi log",
                 content: <BiDiLog log={bidiLog} />,
               },
-              // {
-              //   id: "network",
-              //   icon: networlIcon,
-              //   title: "Network",
-              //   content: <p className="network-container">Coming soon...</p>,
-              // },
+              {
+                id: "network",
+                icon: networkIcon,
+                title: "Network",
+                content: (
+                  <Network
+                    filteringBrowsingContextId={filteringBrowsingContextId}
+                    isClientReady={isClientReady}
+                    networkEntries={networkEntries}
+                  />
+                ),
+              },
             ]}
           />
         ) : null}

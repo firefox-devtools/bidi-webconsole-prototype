@@ -74,6 +74,7 @@ class App extends React.Component {
       isConnectingToExistingSession: false,
       host: "localhost:9222",
       networkEntries: [],
+      pageTimings: [],
     };
 
     this.#client = new Client(this.updateBidiLog);
@@ -153,17 +154,17 @@ class App extends React.Component {
         }));
         break;
       }
-      case "browsingContext.contextCreated":
+      case "browsingContext.contextCreated": {
+        await this.#updateBrowsingContexts();
+        break;
+      }
+      case "browsingContext.domContentLoaded": {
+        this.#updatePageTimings("domContentLoaded", data.params);
+        break;
+      }
       case "browsingContext.load": {
-        const contextList = await this.#requestBrowsingContexts();
-        const selectedContext = findContextById(
-          contextList,
-          this.state.evaluationBrowsingContextId
-        );
-        this.#evaluationBrowsingContextUrl = selectedContext.url;
-        this.setState({
-          browsingContexts: contextList,
-        });
+        this.#updatePageTimings("load", data.params);
+        await this.#updateBrowsingContexts();
         break;
       }
       case "network.beforeRequestSent": {
@@ -239,6 +240,7 @@ class App extends React.Component {
     this.#client.sendCommand("session.subscribe", {
       events: [
         "browsingContext.contextCreated",
+        "browsingContext.domContentLoaded",
         "browsingContext.load",
         "log.entryAdded",
         "network.beforeRequestSent",
@@ -265,6 +267,7 @@ class App extends React.Component {
     } else if (this.state.activeTab === "network") {
       this.setState(() => ({
         networkEntries: [],
+        pageTimings: [],
       }));
     } else {
       this.setState(() => ({
@@ -279,6 +282,48 @@ class App extends React.Component {
       {}
     );
     return responce.result.contexts;
+  };
+
+  #updateBrowsingContexts = async () => {
+    const contextList = await this.#requestBrowsingContexts();
+    const selectedContext = findContextById(
+      contextList,
+      this.state.evaluationBrowsingContextId
+    );
+    this.#evaluationBrowsingContextUrl = selectedContext.url;
+    this.setState({
+      browsingContexts: contextList,
+    });
+  };
+
+  #updatePageTimings = async (type, eventParams) => {
+    const { context, timestamp, url } = eventParams;
+    this.setState((state) => {
+      const firstRequest = state.networkEntries.findLast(entry =>
+        entry.contextId === context && entry.request.url === url
+      );
+
+      let relativeTime = +Infinity;
+      if (firstRequest) {
+        const timings = firstRequest.request.timings;
+        relativeTime = timestamp - (timings.requestTime / 1000);
+        relativeTime = relativeTime.toFixed(1);
+        firstRequest.isFirstRequest = true;
+      }
+
+      return {
+        pageTimings: [
+          ...state.pageTimings,
+          {
+            contextId: context,
+            relativeTime,
+            timestamp,
+            type,
+            url,
+          }
+        ],
+      }
+    });
   };
 
   setActiveTab = (tab) => {
@@ -372,6 +417,7 @@ class App extends React.Component {
       isClientReady,
       isConnectButtonDisabled,
       networkEntries,
+      pageTimings,
     } = this.state;
 
     return (
@@ -448,6 +494,7 @@ class App extends React.Component {
                     filteringBrowsingContextId={filteringBrowsingContextId}
                     isClientReady={isClientReady}
                     networkEntries={networkEntries}
+                    pageTimings={pageTimings}
                   />
                 ),
               },

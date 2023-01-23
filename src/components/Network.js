@@ -1,13 +1,17 @@
 import "./Network.css";
 
 const Network = ({
-  networkEntries,
-  isClientReady,
   filteringBrowsingContextId,
+  isClientReady,
+  networkEntries,
+  pageTimings,
 }) => {
   if (!isClientReady) {
     return null;
   }
+
+  const entries = networkEntries.filter(({ contextId }) =>
+            !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
 
   return (
     <div className="network-app">
@@ -28,30 +32,39 @@ const Network = ({
         </div>
       </div>
       <div className="network-entries">
-        {networkEntries.map(
+        {entries.map(
           ({
-            contextId,
-            url,
+            isFirstRequest,
             request,
             response,
+            url,
           }) =>
-            !filteringBrowsingContextId || (filteringBrowsingContextId === contextId) ? (
-              <div className="network-row">
-                <span className="network-column network-column-status">
-                  {response?.status}
-                </span>
-                <span className="network-column network-column-status">
-                  {request.method}
-                </span>
-                <span className="network-column network-column-status">
-                  {response?.protocol}
-                </span>
-                <span className="network-column network-column-status ellipsis-text">
-                  {request.url}
-                </span>
-              </div>
-            ) : null
+            <div className={`network-row ${isFirstRequest ? 'network-first-request' : ''}`}>
+              <span className="network-column network-column-status">
+                {response?.status}
+              </span>
+              <span className="network-column network-column-status">
+                {request.method}
+              </span>
+              <span className="network-column network-column-status">
+                {response?.protocol}
+              </span>
+              <span className="network-column network-column-status ellipsis-text">
+                {request.url}
+              </span>
+            </div>
         )}
+      </div>
+      <div className="network-footer">
+        <span className="network-summary-item">
+          {entries.length} requests
+        </span>
+        <span className="network-summary-item network-summary-timing">
+          DOMContentLoaded: {pageTimings.findLast(t => t.type === "domContentLoaded")?.relativeTime}ms
+        </span>
+        <span className="network-summary-item network-summary-timing">
+          load: {pageTimings.findLast(t => t.type === "load")?.relativeTime}ms
+        </span>
       </div>
     </div>
   );

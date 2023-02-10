@@ -299,11 +299,12 @@ class App extends React.Component {
   #updatePageTimings = async (type, eventParams) => {
     const { context, timestamp, url } = eventParams;
     this.setState((state) => {
-      const firstRequest = state.networkEntries.findLast(entry =>
-        entry.contextId === context && entry.request.url === url
+      const firstRequest = state.networkEntries.findLast(
+        (entry) => entry.contextId === context && entry.request.url === url
       );
 
-      let relativeTime = +Infinity, startedTime = -1;
+      let relativeTime = +Infinity,
+        startedTime = -1;
       if (firstRequest) {
         const timings = firstRequest.request.timings;
         startedTime = timings.requestTime / 1000;
@@ -322,9 +323,9 @@ class App extends React.Component {
             timestamp,
             type,
             url,
-          }
+          },
         ],
-      }
+      };
     });
   };
 
@@ -379,16 +380,18 @@ class App extends React.Component {
           contextId: this.state.evaluationBrowsingContextId,
           contextUrl: this.#evaluationBrowsingContextUrl,
           id: this.#getNewMessageId(),
-          message: responce.result.result
-            ? formatConsoleOutput(responce.result.result)
-            : responce.result.exceptionDetails.text,
+          message: responce.result
+            ? responce.result.result
+              ? formatConsoleOutput(responce.result.result)
+              : responce.result.exceptionDetails.text
+            : responce.message,
           source: "javascript",
-          dataType: responce.result.result
+          dataType: responce.result?.result
             ? responce.result.result.type
             : "string",
           timestamp: Date.now(),
           type: MESSAGE_TYPE.RESULT,
-          level: responce.result.result
+          level: responce.result?.result
             ? MESSAGE_LEVEL.LOG
             : MESSAGE_LEVEL.ERROR,
         },

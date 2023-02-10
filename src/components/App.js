@@ -485,12 +485,6 @@ class App extends React.Component {
                 ),
               },
               {
-                id: "bidi-log",
-                icon: bidiLogIcon,
-                title: "BiDi log",
-                content: <BiDiLog log={bidiLog} />,
-              },
-              {
                 id: "network",
                 icon: networkIcon,
                 title: "Network",
@@ -502,6 +496,12 @@ class App extends React.Component {
                     pageTimings={pageTimings}
                   />
                 ),
+              },
+              {
+                id: "bidi-log",
+                icon: bidiLogIcon,
+                title: "BiDi log",
+                content: <BiDiLog log={bidiLog} />,
               },
             ]}
           />

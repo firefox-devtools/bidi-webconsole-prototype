@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/bidi-webconsole-prototype/static/css/main.27d51727.css",
-    "main.js": "/bidi-webconsole-prototype/static/js/main.424c1e8d.js",
+    "main.css": "/bidi-webconsole-prototype/static/css/main.028d6c20.css",
+    "main.js": "/bidi-webconsole-prototype/static/js/main.9824afcc.js",
     "index.html": "/bidi-webconsole-prototype/index.html",
     "static/media/file.svg": "/bidi-webconsole-prototype/static/media/file.6dfff5107ddc25452b82.svg",
     "static/media/delete.svg": "/bidi-webconsole-prototype/static/media/delete.8ad65d53c79f6eefb027.svg",
@@ -15,11 +15,11 @@
     "static/media/error-small.svg": "/bidi-webconsole-prototype/static/media/error-small.1e8a89aeaf3c8c29679f.svg",
     "static/media/info-small.svg": "/bidi-webconsole-prototype/static/media/info-small.396b2f03b8d8aed7e3f1.svg",
     "static/media/return.svg": "/bidi-webconsole-prototype/static/media/return.9f94ae71de1f6bdb1979.svg",
-    "main.27d51727.css.map": "/bidi-webconsole-prototype/static/css/main.27d51727.css.map",
-    "main.424c1e8d.js.map": "/bidi-webconsole-prototype/static/js/main.424c1e8d.js.map"
+    "main.028d6c20.css.map": "/bidi-webconsole-prototype/static/css/main.028d6c20.css.map",
+    "main.9824afcc.js.map": "/bidi-webconsole-prototype/static/js/main.9824afcc.js.map"
   },
   "entrypoints": [
-    "static/css/main.27d51727.css",
-    "static/js/main.424c1e8d.js"
+    "static/css/main.028d6c20.css",
+    "static/js/main.9824afcc.js"
   ]
 }

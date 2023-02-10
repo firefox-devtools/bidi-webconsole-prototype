@@ -4,7 +4,7 @@
   border-bottom: 1px solid #eee;
   list-style: none;
   min-height: 30px;
-  font-size: 14px;
+  font-size: 12px;
   margin-inline: 20px;
   grid-template-columns: 70px auto;
   column-gap: 20px;
@@ -13,7 +13,7 @@
 
 .entry__type {
   justify-self: start;
-  line-height: 18px;
+  line-height: 15px;
   border-radius: 3px;
   color: #555555;
   background: #eeeeee;
@@ -22,17 +22,17 @@
   cursor: pointer;
   user-select: none;
   position: relative;
-  height: 20px;
-  font-size: 12px;
+  height: 17px;
+  font-size: 11px;
 }
 
 .entry__type::after {
   content: "▶︎";
   display: inline-block;
-  width: 12px;
+  width: 11px;
   right: 0;
   position: absolute;
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .entry__type_expanded::after {

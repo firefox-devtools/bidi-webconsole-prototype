@@ -15,13 +15,14 @@ const ConnectionContainer = ({
 
   return (
     <div id="connection-container">
-      <h4>Connect to Firefox</h4>
+      <h4>Connect to browser</h4>
       <div id="connection-help">
-        Start Firefox with{" "}
-        <span id="connection-help-arguments">
-          {connectionArguments}
-        </span>
-        <button
+        <p>
+          Start Firefox with{" "}
+          <span id="connection-help-arguments">
+            {connectionArguments}
+          </span>
+          <button
           id="copy-to-clipboard"
           onClick={(event) => {
             event.stopPropagation();
@@ -35,6 +36,8 @@ const ConnectionContainer = ({
           }}>
           copy to clipboard
         </button>
+        </p>
+        <p>or chromium-bidi package</p>
       </div>
       <div>
         <input

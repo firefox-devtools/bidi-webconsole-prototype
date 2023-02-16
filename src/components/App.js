@@ -57,6 +57,7 @@ class App extends React.Component {
   #evaluationBrowsingContextUrl;
   #isReconnecting;
   #lastMessageId;
+  #networkEventsSupported;
 
   constructor(props) {
     super(props);
@@ -83,6 +84,7 @@ class App extends React.Component {
     this.#client.on("websocket-message", this.#onWebsocketMessage);
 
     this.#isReconnecting = false;
+    this.#networkEventsSupported = true;
   }
 
   componentDidMount() {
@@ -250,6 +252,7 @@ class App extends React.Component {
     // Chrome doesn't support network events yet, that's why previous subscribe
     // will fail, and, in this case, we will subscribe again excluding network events.
     if (response.error === 'invalid argument') {
+      this.#networkEventsSupported = false;
       this.#client.sendCommand("session.subscribe", {
         events: [
           "browsingContext.contextCreated",
@@ -437,6 +440,51 @@ class App extends React.Component {
       pageTimings,
     } = this.state;
 
+    const tabs = [{
+      id: "console",
+      icon: consoleIcon,
+      title: "Console",
+      content: (
+        <Console
+          consoleOutput={consoleOutput}
+          consoleInput={consoleInput}
+          isClientReady={isClientReady}
+          onSubmit={this.onConsoleSubmit}
+          onChange={this.onInputChange}
+          evaluationBrowsingContextId={evaluationBrowsingContextId}
+          filteringBrowsingContextId={filteringBrowsingContextId}
+          browsingContexts={browsingContexts}
+          setEvaluationBrowsingContext={
+            this.setEvaluationBrowsingContext
+          }
+        />
+      ),
+    }];
+
+    // Add network tab only if network events are supported.
+    if(this.#networkEventsSupported) {
+      tabs.push({
+        id: "network",
+        icon: networkIcon,
+        title: "Network",
+        content: (
+          <Network
+            filteringBrowsingContextId={filteringBrowsingContextId}
+            isClientReady={isClientReady}
+            networkEntries={networkEntries}
+            pageTimings={pageTimings}
+          />
+        ),
+      });
+    }
+
+    tabs.push({
+      id: "bidi-log",
+      icon: bidiLogIcon,
+      title: "BiDi log",
+      content: <BiDiLog log={bidiLog} />,
+    });
+
     return (
       <>
         <header>
@@ -475,47 +523,7 @@ class App extends React.Component {
           <Tabs
             activeTab={activeTab}
             setActiveTab={this.setActiveTab}
-            tabs={[
-              {
-                id: "console",
-                icon: consoleIcon,
-                title: "Console",
-                content: (
-                  <Console
-                    consoleOutput={consoleOutput}
-                    consoleInput={consoleInput}
-                    isClientReady={isClientReady}
-                    onSubmit={this.onConsoleSubmit}
-                    onChange={this.onInputChange}
-                    evaluationBrowsingContextId={evaluationBrowsingContextId}
-                    filteringBrowsingContextId={filteringBrowsingContextId}
-                    browsingContexts={browsingContexts}
-                    setEvaluationBrowsingContext={
-                      this.setEvaluationBrowsingContext
-                    }
-                  />
-                ),
-              },
-              {
-                id: "network",
-                icon: networkIcon,
-                title: "Network (only for Firefox)",
-                content: (
-                  <Network
-                    filteringBrowsingContextId={filteringBrowsingContextId}
-                    isClientReady={isClientReady}
-                    networkEntries={networkEntries}
-                    pageTimings={pageTimings}
-                  />
-                ),
-              },
-              {
-                id: "bidi-log",
-                icon: bidiLogIcon,
-                title: "BiDi log",
-                content: <BiDiLog log={bidiLog} />,
-              },
-            ]}
+            tabs={tabs}
           />
         ) : null}
       </>

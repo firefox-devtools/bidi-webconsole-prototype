@@ -237,7 +237,7 @@ class App extends React.Component {
     // XXX: For existing sessions, we already subscribed to this in theory.
     // We could skip it, but we have no way to check if we are already
     // subscribed. We could also unsubscribe/subscribe.
-    this.#client.sendCommand("session.subscribe", {
+    const response = await this.#client.sendCommand("session.subscribe", {
       events: [
         "browsingContext.contextCreated",
         "browsingContext.domContentLoaded",
@@ -247,6 +247,18 @@ class App extends React.Component {
         "network.responseCompleted",
       ],
     });
+    // Chrome doesn't support network events yet, that's why previous subscribe
+    // will fail, and, in this case, we will subscribe again excluding network events.
+    if (response.error === 'invalid argument') {
+      this.#client.sendCommand("session.subscribe", {
+        events: [
+          "browsingContext.contextCreated",
+          "browsingContext.domContentLoaded",
+          "browsingContext.load",
+          "log.entryAdded"
+        ],
+      });
+    }
 
     const contextList = await this.#requestBrowsingContexts();
     const topContext = contextList[0];
@@ -487,7 +499,7 @@ class App extends React.Component {
               {
                 id: "network",
                 icon: networkIcon,
-                title: "Network",
+                title: "Network (only for Firefox)",
                 content: (
                   <Network
                     filteringBrowsingContextId={filteringBrowsingContextId}

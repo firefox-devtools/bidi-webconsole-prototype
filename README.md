@@ -10,6 +10,11 @@ After running the UI, follow the instructions on the screen on how to run a Fire
 
 How to connect to Chrome:
 
+- clone [chromium-bidi package](https://github.com/GoogleChromeLabs/chromium-bidi)
+- run `npm install`
+- run `npm run server -- --headless=false` or `./runBiDiServer.sh --headless=false`
+- connect to it with the client
+
 <img src="https://user-images.githubusercontent.com/5276969/220091438-79d8210b-0b57-4154-9f8b-17372f62169f.gif" alt=""/>
 
 <details>

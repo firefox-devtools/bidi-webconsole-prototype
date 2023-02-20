@@ -8,6 +8,10 @@ After running the UI, follow the instructions on the screen on how to run a Fire
 
 <img src="https://user-images.githubusercontent.com/5276969/196655300-7916c8f3-9a85-4882-ba5b-0d8f98e2bdf6.gif" alt="" />
 
+How to connect to Chrome:
+
+<img src="https://user-images.githubusercontent.com/5276969/220091438-79d8210b-0b57-4154-9f8b-17372f62169f.gif" alt=""/>
+
 <details>
     <summary>See more video instructions</summary>
     <p>Filtering the console messages and evaluating code in the different contexts</p>

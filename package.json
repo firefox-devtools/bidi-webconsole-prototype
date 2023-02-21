@@ -7,6 +7,7 @@
   },
   "homepage": "https://lutien.github.io/bidi-webconsole-prototype",
   "dependencies": {
+    "bidi-har-export": "juliandescottes/bidi-har-export#b2dc5b5d6fa90cdddb41c40681dc25119a37cd95",
     "codemirror": "6.0.1",
     "@codemirror/lang-javascript": "6.1.0",
     "@codemirror/view": "6.2.5",

@@ -1,11 +1,16 @@
 import React from "react";
 import "./NetworkFooter.css";
 
-import { exportAsHAR } from "../har.js";
+import { adapters } from "bidi-har-export";
 
 class NetworkFooter extends React.Component {
-  #onHarButtonClick = (entries, timings) => {
-    const har = exportAsHAR(entries, timings);
+  #onHarButtonClick = (events) => {
+    const exporter = new adapters.EventsCollectionExporter(events, {
+      browser: "Firefox",
+      version: "111.0a1",
+    });
+    const har = exporter.exportAsHar();
+
     const blob = new Blob([JSON.stringify(har, null, 2)], {
       type: "application/json",
     });
@@ -23,9 +28,11 @@ class NetworkFooter extends React.Component {
 
   render() {
     const {
+      filteredHarEvents,
       filteredNetworkEntries,
       filteredPageTimings,
     } = this.props;
+
 
     return (
       <div className="network-footer">
@@ -40,7 +47,7 @@ class NetworkFooter extends React.Component {
         </span>
         <span
           className="network-summary-item network-har-export-button"
-          onClick={() => this.#onHarButtonClick(filteredNetworkEntries, filteredPageTimings)}
+          onClick={() => this.#onHarButtonClick(filteredHarEvents)}
         >
           Save all as HAR
         </span>

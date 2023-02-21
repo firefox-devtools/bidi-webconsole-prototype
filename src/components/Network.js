@@ -4,6 +4,7 @@ import "./Network.css";
 
 const Network = ({
   filteringBrowsingContextId,
+  harEvents,
   isClientReady,
   networkEntries,
   pageTimings,
@@ -18,6 +19,9 @@ const Network = ({
 
   const timings = pageTimings.filter(({ contextId }) =>
             !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
+
+  const events = harEvents.filter((event) =>
+            !filteringBrowsingContextId || (filteringBrowsingContextId === event.params.context));
 
   return (
     <div className="network-app">
@@ -62,6 +66,7 @@ const Network = ({
         )}
       </div>
       <NetworkFooter
+        filteredHarEvents={events}
         filteredNetworkEntries={entries}
         filteredPageTimings={timings}
       />

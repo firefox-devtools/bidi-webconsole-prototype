@@ -52,6 +52,13 @@ const MESSAGE_LEVEL = {
   INFO: "info",
 };
 
+const HAR_EVENTS = [
+  "network.beforeRequestSent",
+  "network.responseCompleted",
+  "browsingContext.domContentLoaded",
+  "browsingContext.load",
+];
+
 class App extends React.Component {
   #client;
   #evaluationBrowsingContextUrl;
@@ -73,6 +80,7 @@ class App extends React.Component {
       isClientReady: false,
       isConnectButtonDisabled: false,
       isConnectingToExistingSession: false,
+      harEvents: [],
       host: "localhost:9222",
       networkEntries: [],
       pageTimings: [],
@@ -128,6 +136,10 @@ class App extends React.Component {
   };
 
   #onWebsocketMessage = async (_, data) => {
+    if (HAR_EVENTS.includes(data.method)) {
+      this.state.harEvents.push(data);
+    }
+
     // eslint-disable-next-line default-case
     switch (data.method) {
       case "log.entryAdded": {
@@ -281,6 +293,7 @@ class App extends React.Component {
       }));
     } else if (this.state.activeTab === "network") {
       this.setState(() => ({
+        harEvents: [],
         networkEntries: [],
         pageTimings: [],
       }));
@@ -433,6 +446,7 @@ class App extends React.Component {
       consoleOutput,
       evaluationBrowsingContextId,
       filteringBrowsingContextId,
+      harEvents,
       host,
       isClientReady,
       isConnectButtonDisabled,
@@ -471,6 +485,7 @@ class App extends React.Component {
           <Network
             filteringBrowsingContextId={filteringBrowsingContextId}
             isClientReady={isClientReady}
+            harEvents={harEvents}
             networkEntries={networkEntries}
             pageTimings={pageTimings}
           />

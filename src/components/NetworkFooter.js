@@ -5,8 +5,9 @@ import { adapters } from "bidi-har-export";
 
 class NetworkFooter extends React.Component {
   #onHarButtonClick = (events) => {
-    const exporter = new adapters.EventsCollectionExporter(events, {
+    const exporter = new adapters.EventsCollectionExporter({
       browser: "Firefox",
+      events,
       version: "111.0a1",
     });
     const har = exporter.exportAsHar();

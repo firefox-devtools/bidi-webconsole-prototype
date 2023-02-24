@@ -3,6 +3,8 @@ import NetworkFooter from "./NetworkFooter";
 import "./Network.css";
 
 const Network = ({
+  browserName,
+  browserVersion,
   filteringBrowsingContextId,
   harEvents,
   isClientReady,
@@ -66,6 +68,8 @@ const Network = ({
         )}
       </div>
       <NetworkFooter
+        browserName={browserName}
+        browserVersion={browserVersion}
         filteredHarEvents={events}
         filteredNetworkEntries={entries}
         filteredPageTimings={timings}

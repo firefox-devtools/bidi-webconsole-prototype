@@ -71,6 +71,8 @@ class App extends React.Component {
 
     this.state = {
       activeTab: "console",
+      browserName: null,
+      browserVersion: null,
       browsingContexts: [],
       bidiLog: [],
       consoleInput: "",
@@ -244,8 +246,10 @@ class App extends React.Component {
       );
 
       // Store the session id
-      const sessionId = sessionNewResponse.result.sessionId;
+      const { capabilities, sessionId } = sessionNewResponse.result;
       localStorage.setItem("sessionId", sessionId);
+      localStorage.setItem("browserName", capabilities.browserName);
+      localStorage.setItem("browserVersion", capabilities.browserVersion);
     }
 
     // XXX: For existing sessions, we already subscribed to this in theory.
@@ -279,6 +283,8 @@ class App extends React.Component {
     const topContext = contextList[0];
     this.#evaluationBrowsingContextUrl = topContext.url;
     this.setState({
+      browserName: localStorage.getItem("browserName"),
+      browserVersion: localStorage.getItem("browserVersion"),
       browsingContexts: contextList,
       evaluationBrowsingContextId: topContext.context,
       isClientReady: true,
@@ -441,6 +447,8 @@ class App extends React.Component {
     const {
       activeTab,
       bidiLog,
+      browserName,
+      browserVersion,
       browsingContexts,
       consoleInput,
       consoleOutput,
@@ -483,6 +491,8 @@ class App extends React.Component {
         title: "Network",
         content: (
           <Network
+            browserName={browserName}
+            browserVersion={browserVersion}
             filteringBrowsingContextId={filteringBrowsingContextId}
             isClientReady={isClientReady}
             harEvents={harEvents}

@@ -1,7 +1,7 @@
 import React from "react";
 import "./NetworkFooter.css";
 
-import { adapters } from "bidi-har-export";
+import { adapters } from "ff-test-bidi-har-export";
 
 class NetworkFooter extends React.Component {
   #onHarButtonClick = (events, browserName, browserVersion) => {

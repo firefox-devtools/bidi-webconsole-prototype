@@ -190,8 +190,9 @@ class App extends React.Component {
             {
               contextId: data.params.context,
               id:
-                data.params.request.request + data.params.request.redirectCount,
+                data.params.request.request + data.params.redirectCount,
               url: data.params.request.url,
+              redirectCount: data.params.redirectCount,
               request: data.params.request,
             },
           ],
@@ -203,7 +204,7 @@ class App extends React.Component {
           const entry = state.networkEntries.find(
             (e) =>
               e.request.request === data.params.request.request &&
-              e.request.redirectCount === data.params.request.redirectCount
+              e.redirectCount === data.params.redirectCount
           );
           entry.request = data.params.request;
           entry.response = data.params.response;

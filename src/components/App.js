@@ -243,7 +243,9 @@ class App extends React.Component {
       console.log("Creating a new session");
       const sessionNewResponse = await this.#client.sendCommand(
         "session.new",
-        {}
+        {
+          capabilities: {},
+        }
       );
 
       // Store the session id

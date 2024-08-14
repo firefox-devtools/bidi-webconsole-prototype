@@ -189,8 +189,7 @@ class App extends React.Component {
             ...state.networkEntries,
             {
               contextId: data.params.context,
-              id:
-                data.params.request.request + data.params.redirectCount,
+              id: data.params.request.request + data.params.redirectCount,
               url: data.params.request.url,
               redirectCount: data.params.redirectCount,
               request: data.params.request,
@@ -227,9 +226,13 @@ class App extends React.Component {
       {}
     );
 
-    // If we connected to an existing session, status `ready` will be false.
+    // For Firefox if we connected to an existing session, status `ready` will be false.
     // Only attempt to create a new session if `ready` is true.
-    const canCreateNewSession = sessionStatusResponse.result.ready;
+    // For Chrome we can not send "session.status" command before starting the session,
+    // so the `result` property is going to be `undefined`.
+    const canCreateNewSession = sessionStatusResponse.result
+      ? sessionStatusResponse.result.ready
+      : true;
     // const { isConnectingToExistingSession } = this.state;
     // if (!canCreateNewSession && !isConnectingToExistingSession) {
     //   console.log(
@@ -241,12 +244,9 @@ class App extends React.Component {
 
     if (canCreateNewSession) {
       console.log("Creating a new session");
-      const sessionNewResponse = await this.#client.sendCommand(
-        "session.new",
-        {
-          capabilities: {},
-        }
-      );
+      const sessionNewResponse = await this.#client.sendCommand("session.new", {
+        capabilities: {},
+      });
 
       // Store the session id
       const { capabilities, sessionId } = sessionNewResponse.result;
@@ -270,14 +270,14 @@ class App extends React.Component {
     });
     // Chrome doesn't support network events yet, that's why previous subscribe
     // will fail, and, in this case, we will subscribe again excluding network events.
-    if (response.error === 'invalid argument') {
+    if (response.error === "invalid argument") {
       this.#networkEventsSupported = false;
       this.#client.sendCommand("session.subscribe", {
         events: [
           "browsingContext.contextCreated",
           "browsingContext.domContentLoaded",
           "browsingContext.load",
-          "log.entryAdded"
+          "log.entryAdded",
         ],
       });
     }
@@ -465,29 +465,29 @@ class App extends React.Component {
       pageTimings,
     } = this.state;
 
-    const tabs = [{
-      id: "console",
-      icon: consoleIcon,
-      title: "Console",
-      content: (
-        <Console
-          consoleOutput={consoleOutput}
-          consoleInput={consoleInput}
-          isClientReady={isClientReady}
-          onSubmit={this.onConsoleSubmit}
-          onChange={this.onInputChange}
-          evaluationBrowsingContextId={evaluationBrowsingContextId}
-          filteringBrowsingContextId={filteringBrowsingContextId}
-          browsingContexts={browsingContexts}
-          setEvaluationBrowsingContext={
-            this.setEvaluationBrowsingContext
-          }
-        />
-      ),
-    }];
+    const tabs = [
+      {
+        id: "console",
+        icon: consoleIcon,
+        title: "Console",
+        content: (
+          <Console
+            consoleOutput={consoleOutput}
+            consoleInput={consoleInput}
+            isClientReady={isClientReady}
+            onSubmit={this.onConsoleSubmit}
+            onChange={this.onInputChange}
+            evaluationBrowsingContextId={evaluationBrowsingContextId}
+            filteringBrowsingContextId={filteringBrowsingContextId}
+            browsingContexts={browsingContexts}
+            setEvaluationBrowsingContext={this.setEvaluationBrowsingContext}
+          />
+        ),
+      },
+    ];
 
     // Add network tab only if network events are supported.
-    if(this.#networkEventsSupported) {
+    if (this.#networkEventsSupported) {
       tabs.push({
         id: "network",
         icon: networkIcon,

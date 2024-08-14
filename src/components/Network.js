@@ -11,19 +11,25 @@ const Network = ({
   networkEntries,
   pageTimings,
 }) => {
-
   if (!isClientReady) {
     return null;
   }
 
-  const entries = networkEntries.filter(({ contextId }) =>
-            !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
+  const entries = networkEntries.filter(
+    ({ contextId }) =>
+      !filteringBrowsingContextId || filteringBrowsingContextId === contextId
+  );
 
-  const timings = pageTimings.filter(({ contextId }) =>
-            !filteringBrowsingContextId || (filteringBrowsingContextId === contextId));
+  const timings = pageTimings.filter(
+    ({ contextId }) =>
+      !filteringBrowsingContextId || filteringBrowsingContextId === contextId
+  );
 
-  const events = harEvents.filter((event) =>
-            !filteringBrowsingContextId || (filteringBrowsingContextId === event.params.context));
+  const events = harEvents.filter(
+    (event) =>
+      !filteringBrowsingContextId ||
+      filteringBrowsingContextId === event.params.context
+  );
 
   return (
     <div className="network-app">
@@ -38,34 +44,30 @@ const Network = ({
           <span className="network-column network-column-protocol ellipsis-text">
             Protocol
           </span>
-          <span className="network-column network-column-url">
-            URL
-          </span>
+          <span className="network-column network-column-url">URL</span>
         </div>
       </div>
       <div className="network-entries">
-        {entries.map(
-          ({
-            isFirstRequest,
-            request,
-            response,
-            url,
-          }) =>
-            <div className={`network-row ${isFirstRequest ? 'network-first-request' : ''}`}>
-              <span className="network-column network-column-status">
-                {response?.status}
-              </span>
-              <span className="network-column network-column-status">
-                {request.method}
-              </span>
-              <span className="network-column network-column-status">
-                {response?.protocol}
-              </span>
-              <span className="network-column network-column-status ellipsis-text">
-                {request.url}
-              </span>
-            </div>
-        )}
+        {entries.map(({ isFirstRequest, request, response, url }) => (
+          <div
+            className={`network-row ${
+              isFirstRequest ? "network-first-request" : ""
+            }`}
+          >
+            <span className="network-column network-column-status">
+              {response?.status}
+            </span>
+            <span className="network-column network-column-status">
+              {request.method}
+            </span>
+            <span className="network-column network-column-status">
+              {response?.protocol}
+            </span>
+            <span className="network-column network-column-status ellipsis-text">
+              {request.url}
+            </span>
+          </div>
+        ))}
       </div>
       <NetworkFooter
         browserName={browserName}

@@ -48,11 +48,12 @@ const Network = ({
         </div>
       </div>
       <div className="network-entries">
-        {entries.map(({ isFirstRequest, request, response, url }) => (
+        {entries.map(({ isFirstRequest, request, response, redirectCount }) => (
           <div
             className={`network-row ${
               isFirstRequest ? "network-first-request" : ""
             }`}
+            key={request.request + redirectCount}
           >
             <span className="network-column network-column-status">
               {response?.status}

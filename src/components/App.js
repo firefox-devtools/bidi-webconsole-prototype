@@ -74,6 +74,7 @@ class App extends React.Component {
       browserName: null,
       browserVersion: null,
       browsingContexts: [],
+      bidiCommand: "",
       bidiLog: [],
       consoleInput: "",
       consoleOutput: [],
@@ -366,6 +367,16 @@ class App extends React.Component {
     });
   };
 
+  sendCommand = (e) => {
+    e.preventDefault();
+    try {
+      const commandObject = JSON.parse(this.state.bidiCommand);
+      this.#client.sendCommand(commandObject.method, commandObject.params);
+    } catch (e) {
+      console.log({ e });
+    }
+  };
+
   setActiveTab = (tab) => {
     this.setState({
       activeTab: tab,
@@ -449,6 +460,7 @@ class App extends React.Component {
   render() {
     const {
       activeTab,
+      bidiCommand,
       bidiLog,
       browserName,
       browserVersion,
@@ -509,8 +521,15 @@ class App extends React.Component {
     tabs.push({
       id: "bidi-log",
       icon: bidiLogIcon,
-      title: "BiDi log",
-      content: <BiDiLog log={bidiLog} />,
+      title: "BiDi interface",
+      content: (
+        <BiDiLog
+          log={bidiLog}
+          bidiCommand={bidiCommand}
+          onBidiCommandChange={this.onInputChange}
+          sendCommand={this.sendCommand}
+        />
+      ),
     });
 
     return (

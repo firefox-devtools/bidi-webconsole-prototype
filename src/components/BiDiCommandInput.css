@@ -1,0 +1,27 @@
+.BiDiCommandInput {
+  display: grid;
+  height: 45px;
+  align-content: center;
+  grid-template-columns: auto 80px;
+  column-gap: 20px;
+  overflow: hidden;
+  margin-inline: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.BiDiCommandInput__input {
+  border: 0;
+  font-size: 14px;
+  margin-left: 2px;
+}
+
+.BiDiCommandInput__form {
+  display: contents;
+}
+
+.BiDiCommandInput__button {
+  border: 0;
+  text-align: left;
+  height: 24px;
+  font-size: 14px;
+}

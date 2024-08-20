@@ -74,6 +74,7 @@ class App extends React.Component {
       browserName: null,
       browserVersion: null,
       browsingContexts: [],
+      bidiCommand: "",
       bidiLog: [],
       consoleInput: "",
       consoleOutput: [],
@@ -189,8 +190,7 @@ class App extends React.Component {
             ...state.networkEntries,
             {
               contextId: data.params.context,
-              id:
-                data.params.request.request + data.params.redirectCount,
+              id: data.params.request.request + data.params.redirectCount,
               url: data.params.request.url,
               redirectCount: data.params.redirectCount,
               request: data.params.request,
@@ -227,9 +227,13 @@ class App extends React.Component {
       {}
     );
 
-    // If we connected to an existing session, status `ready` will be false.
+    // For Firefox if we connected to an existing session, status `ready` will be false.
     // Only attempt to create a new session if `ready` is true.
-    const canCreateNewSession = sessionStatusResponse.result.ready;
+    // For Chrome we can not send "session.status" command before starting the session,
+    // so the `result` property is going to be `undefined`.
+    const canCreateNewSession = sessionStatusResponse.result
+      ? sessionStatusResponse.result.ready
+      : true;
     // const { isConnectingToExistingSession } = this.state;
     // if (!canCreateNewSession && !isConnectingToExistingSession) {
     //   console.log(
@@ -241,12 +245,9 @@ class App extends React.Component {
 
     if (canCreateNewSession) {
       console.log("Creating a new session");
-      const sessionNewResponse = await this.#client.sendCommand(
-        "session.new",
-        {
-          capabilities: {},
-        }
-      );
+      const sessionNewResponse = await this.#client.sendCommand("session.new", {
+        capabilities: {},
+      });
 
       // Store the session id
       const { capabilities, sessionId } = sessionNewResponse.result;
@@ -270,14 +271,14 @@ class App extends React.Component {
     });
     // Chrome doesn't support network events yet, that's why previous subscribe
     // will fail, and, in this case, we will subscribe again excluding network events.
-    if (response.error === 'invalid argument') {
+    if (response.error === "invalid argument") {
       this.#networkEventsSupported = false;
       this.#client.sendCommand("session.subscribe", {
         events: [
           "browsingContext.contextCreated",
           "browsingContext.domContentLoaded",
           "browsingContext.load",
-          "log.entryAdded"
+          "log.entryAdded",
         ],
       });
     }
@@ -366,6 +367,16 @@ class App extends React.Component {
     });
   };
 
+  sendCommand = (e) => {
+    e.preventDefault();
+    try {
+      const commandObject = JSON.parse(this.state.bidiCommand);
+      this.#client.sendCommand(commandObject.method, commandObject.params);
+    } catch (error) {
+      console.error({ error });
+    }
+  };
+
   setActiveTab = (tab) => {
     this.setState({
       activeTab: tab,
@@ -449,6 +460,7 @@ class App extends React.Component {
   render() {
     const {
       activeTab,
+      bidiCommand,
       bidiLog,
       browserName,
       browserVersion,
@@ -465,29 +477,29 @@ class App extends React.Component {
       pageTimings,
     } = this.state;
 
-    const tabs = [{
-      id: "console",
-      icon: consoleIcon,
-      title: "Console",
-      content: (
-        <Console
-          consoleOutput={consoleOutput}
-          consoleInput={consoleInput}
-          isClientReady={isClientReady}
-          onSubmit={this.onConsoleSubmit}
-          onChange={this.onInputChange}
-          evaluationBrowsingContextId={evaluationBrowsingContextId}
-          filteringBrowsingContextId={filteringBrowsingContextId}
-          browsingContexts={browsingContexts}
-          setEvaluationBrowsingContext={
-            this.setEvaluationBrowsingContext
-          }
-        />
-      ),
-    }];
+    const tabs = [
+      {
+        id: "console",
+        icon: consoleIcon,
+        title: "Console",
+        content: (
+          <Console
+            consoleOutput={consoleOutput}
+            consoleInput={consoleInput}
+            isClientReady={isClientReady}
+            onSubmit={this.onConsoleSubmit}
+            onChange={this.onInputChange}
+            evaluationBrowsingContextId={evaluationBrowsingContextId}
+            filteringBrowsingContextId={filteringBrowsingContextId}
+            browsingContexts={browsingContexts}
+            setEvaluationBrowsingContext={this.setEvaluationBrowsingContext}
+          />
+        ),
+      },
+    ];
 
     // Add network tab only if network events are supported.
-    if(this.#networkEventsSupported) {
+    if (this.#networkEventsSupported) {
       tabs.push({
         id: "network",
         icon: networkIcon,
@@ -509,8 +521,15 @@ class App extends React.Component {
     tabs.push({
       id: "bidi-log",
       icon: bidiLogIcon,
-      title: "BiDi log",
-      content: <BiDiLog log={bidiLog} />,
+      title: "BiDi interface",
+      content: (
+        <BiDiLog
+          log={bidiLog}
+          bidiCommand={bidiCommand}
+          onBidiCommandChange={this.onInputChange}
+          sendCommand={this.sendCommand}
+        />
+      ),
     });
 
     return (

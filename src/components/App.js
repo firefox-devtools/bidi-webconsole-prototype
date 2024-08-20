@@ -372,8 +372,8 @@ class App extends React.Component {
     try {
       const commandObject = JSON.parse(this.state.bidiCommand);
       this.#client.sendCommand(commandObject.method, commandObject.params);
-    } catch (e) {
-      console.log({ e });
+    } catch (error) {
+      console.error({ error });
     }
   };
 

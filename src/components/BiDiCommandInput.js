@@ -1,8 +1,8 @@
 import React from "react";
 
-import "./BiDCommandInput.css";
+import "./BiDiCommandInput.css";
 
-const BiDCommandInput = ({ onInputChange, onSubmit, value }) => {
+const BiDiCommandInput = ({ onInputChange, onSubmit, value }) => {
   return (
     <li className="BiDiCommandInput">
       <form className="BiDiCommandInput__form" onSubmit={onSubmit}>
@@ -20,4 +20,4 @@ const BiDCommandInput = ({ onInputChange, onSubmit, value }) => {
   );
 };
 
-export default BiDCommandInput;
+export default BiDiCommandInput;
